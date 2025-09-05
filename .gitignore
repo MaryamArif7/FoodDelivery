@@ -1,0 +1,7 @@
+# Node modules in any directory
+node_modules/
+**/node_modules/
+
+# Specific paths (alternative way)
+frontend/node_modules/
+backend/node_modules/
