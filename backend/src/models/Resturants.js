@@ -49,7 +49,14 @@ const resturantSchema = new mongoose.Schema(
         type:String,
         required:true,
     },
-
+   logo:{
+    type:String,
+    required:true,
+   },
+   coverImage:{
+    type:String,
+    required:true,
+   }
   
   
   },
