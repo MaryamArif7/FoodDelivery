@@ -12,10 +12,6 @@ const adminSchema=new mongoose.Schema({
     type:String,
     required:true
   },
-  role:{
-    type:String,
-    enum:['user','admin','resturant','driver'],
-    default:'admin'
-  }
+  lastLogin: Date,
 })
 export default mongoose.model("Admin", adminSchema);

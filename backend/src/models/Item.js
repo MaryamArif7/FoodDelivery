@@ -1,16 +1,13 @@
-import mongoose from "mongoose";
-const itemSchema=new mongoose.Schema({
-    name:{
-        type:String,
-        required:true
-    },
-    description:{
-        type:String,
-        required:true,
-    },
-    price:{
-        type:String,
-        required:true
-    }
-});
+const itemSchema = new mongoose.Schema({
+  restaurantId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Restaurant", 
+    required: true 
+  },
+  name: { type: String, required: true },
+  description: String,
+  price: { type: Number, required: true },
+  image: String,
+}, { timestamps: true });
+
 export default mongoose.model("Item", itemSchema);

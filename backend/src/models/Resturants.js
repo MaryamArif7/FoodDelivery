@@ -1,66 +1,42 @@
-import mongoose from "mongoose";
-
-const resturantSchema = new mongoose.Schema(
+const restaurantSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
-    email: {
+    name: { type: String, required: true },
+    address: {
+      street: String,
+      city: String,
+    },
+     email: {
       type: String,
       required: true,
       unique: true,
     },
-    phone: {
+      phone: {
       type: String,
       required: true,
     },
-    role: {
+     description: {
+      type: String,
+      required: true,
+    },
+     role: {
       type: String,
       enum: ["user", "restaurant", "driver", "admin"],
       default: "restaurant",
     },
-    password: {
-      type: String,
-      required: true,
-    },
-    address: [
-      {
-        street: {
-          type: String,
-          required: true,
-        },
-        city: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
-    //available or not
-    status:{
-        type:String,
-        enum:['open','close'],
-    },
-    openingHours:{
-        type:String,
-        required:true
-    },
-    orderCompleted:{
-        type:String,
-        required:true,
-    },
-   logo:{
-    type:String,
-    required:true,
-   },
-   coverImage:{
-    type:String,
-    required:true,
-   }
-  
-  
+    status: { type: String, enum: ["open", "close"], default: "open" },
+    approved:{type:String,enum:["pending","accepted"]},
+    openingHours: { type: String, required: true },
+    logo: String,
+    coverImage: String,
+    orderCompleted: { type: Number, default: 0 },
+    lastLogin: Date,
   },
   { timestamps: true }
 );
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model("Restaurant", restaurantSchema);
