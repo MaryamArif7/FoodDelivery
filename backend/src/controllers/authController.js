@@ -2,36 +2,71 @@ import User from "../models/User.js";
 import Restaurant from "../models/Resturants.js";
 import Driver from "../models/Driver.js";
 import Admin from "../models/Admin.js";
-import bycrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 export const SignUpUser = async (req, res) => {
   const { name, email, password, role, phone, address } = req.body;
   console.log(req.body);
+  
   try {
+  
     if (!name) {
-      return res.status(404).json("Please provide name");
-    }
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email and password is required" });
-    }
-    const hashedPassword = await bycrypt.hash(password, 10);
-
-    if (role === "user") {
-      const newUser = new User({
-        name,
-        email,
-        password: hashedPassword,
-        role,
-        phone,
-        address,
+      return res.status(400).json({ 
+        success: false, 
+        message: "Please provide name" 
       });
-      await newUser.save();
-      return res.status(200).json("Resturant Created Successfully!");
     }
-  } catch (e) {
-    res.status(401).json("Please Provide a valid role");
+    
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Email and password are required" 
+      });
+    }
+
+    if (!role || role !== "user") {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Please provide a valid role" 
+      });
+    }
+
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ 
+        success: false, 
+        message: "User with this email already exists" 
+      });
+    }
+
+   
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      phone,
+      address,
+      role,
+    });
+
+    await newUser.save();
+    
+    return res.status(201).json({ 
+      success: true, 
+      message: "User created successfully!" 
+    });
+
+  } catch (error) {
+    console.error("Error in SignUpUser:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: "Internal server error", 
+      error: error.message 
+    });
   }
 };
 export const SignUpResturant = async (req, res) => {

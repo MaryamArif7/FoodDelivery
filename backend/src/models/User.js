@@ -24,18 +24,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    address: [
-      {
-        street: {
-          type: String,
-          required: true,
-        },
-        city: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+    // address: [
+    //   {
+    //     street: {
+    //       type: String,
+    //       required: true,
+    //     },
+    //     city: {
+    //       type: String,
+    //       required: true,
+    //     },
+    //   },
+    // ],
+    address:{
+      type:String,
+      required:true,
+    },
     favourites: [
       {
         type: mongoose.Schema.Types.ObjectId,
