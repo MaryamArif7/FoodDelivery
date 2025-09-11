@@ -2,9 +2,10 @@ import mongoose from 'mongoose';
 import express from 'express';
 import dotenv from 'dotenv';
 import authRoutes from "../src/routes/authRoutes.js"
+import cors from 'cors';
 dotenv.config();
 
-mongoose.connect('mongodb+srv://mary:mary7@foodrush.zk9bxux.mongodb.net/?retryWrites=true&w=majority&appName=FoodRush',{
+mongoose.connect('mongodb+srv://maryam7:maryam1306@maryam.xoazkgz.mongodb.net/?retryWrites=true&w=majority&appName=maryam',{
     useNewUrlParser:true,
     useUnifiedTopology:true
 }
@@ -13,7 +14,8 @@ mongoose.connect('mongodb+srv://mary:mary7@foodrush.zk9bxux.mongodb.net/?retryWr
   .catch(err => console.error('MongoDB connection error:', err));
   const app=express();
 app.use(express.json());
-app.use("/",authRoutes);
+app.use(cors());
+app.use("/api",authRoutes);
 
 
 

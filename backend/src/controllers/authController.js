@@ -6,6 +6,7 @@ import bycrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 export const SignUpUser = async (req, res) => {
   const { name, email, password, role, phone, address } = req.body;
+  console.log(req.body);
   try {
     if (!name) {
       return res.status(404).json("Please provide name");
