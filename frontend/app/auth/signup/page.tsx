@@ -19,14 +19,12 @@ export default function Register() {
         role: "user",
       };
 
-      await axios.post("http://localhost:5000/api/signup/user", data);
-      
-      // Only redirect on successful registration
-      router.push("/");
+     const response= await axios.post("http://localhost:5000/api/signup/user", data);
+
       
     } catch (error) {
       console.error("Error signing up:", error);
-      // Handle error appropriately - maybe show error message to user
+    
     }
   };
 
