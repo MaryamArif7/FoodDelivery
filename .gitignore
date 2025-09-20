@@ -15,6 +15,7 @@ frontend/.next/
 frontend/.next/
 frontend/out/
 frontend/build/
+backend/.env
 .next/
 out/
 build/
