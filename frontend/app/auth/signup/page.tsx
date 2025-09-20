@@ -4,7 +4,9 @@ import { useRouter } from "next/navigation";
 
 export default function Register() {
   const router = useRouter();
-  
+  const registerResturant=()=>{
+    router.push("/auth/signup/resturant")
+  }
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -80,6 +82,7 @@ export default function Register() {
           
           <button type="submit">Register</button>
         </form>
+         <button onClick={registerResturant}>Register</button>
       </div>
     </>
   );

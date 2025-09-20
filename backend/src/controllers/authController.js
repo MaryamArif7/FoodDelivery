@@ -79,11 +79,10 @@ export const SignUpResturant = async (req, res) => {
     phone,
     address,
     description,
-    approved,
     openingHours,
     logo,
     coverImage,
-    orderCompleted,
+ 
   } = req.body;
   try {
     if (!name) {
@@ -109,7 +108,7 @@ export const SignUpResturant = async (req, res) => {
         openingHours,
         logo,
         coverImage,
-        orderCompleted,
+       
       });
       await newResturant.save();
       return res.status(200).json("Resturant Created Successfully!");
