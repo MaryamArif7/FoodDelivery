@@ -11,7 +11,7 @@ export const getAllResturants = async (req, res) => {
 
 export const addMenu = async (req, res) => {
   try {
-    const { items } = re.body;
+    const { items } = req.body;
     const { id } = req.params;
     const resturant = await Resturant.findById(id);
     if (!resturant) {
@@ -23,9 +23,11 @@ export const addMenu = async (req, res) => {
     const addedItems = newItems.map((item) => item._id);
     resturant.menu.push(...addedItems);
     await resturant.save();
+    const updatedRestaurant = await resturant.populate("menu");
+
     res
       .status(200)
-      .json({ message: "Items added successfully", data: resturant });
+      .json({ message: "Items added successfully", data: updatedRestaurant });
   } catch (error) {
     res.status(500).json({ message: "error", error: error.message });
   }

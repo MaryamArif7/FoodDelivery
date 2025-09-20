@@ -16,11 +16,11 @@ export default function Register() {
         password: formData.get("password"),
         phone: formData.get("phone"),
         address: formData.get("address"),
-        description:formData.get("description"),
-        openingHours:formData.get("openingHours"),
-        logo:formData.get("logo"),
-        coverImage:formData.get("coverImage"),
-        menu:formData.get("menu"),
+        description: formData.get("description"),
+        openingHours: formData.get("openingHours"),
+        logo: formData.get("logo"),
+        coverImage: formData.get("coverImage"),
+        menu: formData.get("menu"),
         role: "resturant",
       };
 
