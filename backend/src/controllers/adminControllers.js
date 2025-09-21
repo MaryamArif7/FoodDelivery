@@ -13,7 +13,7 @@ export const updateResturantApproval = async (req, res) => {
     const { approved } = req.body;
     if(approved==="active"){
         return res.status(401).json({
-            message:"Resturant status is already active"
+            message:"Resturant  is already active"
         })
     }
     try {

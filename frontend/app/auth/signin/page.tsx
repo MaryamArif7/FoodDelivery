@@ -1,10 +1,11 @@
 "use client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/lib/features/authSlice";
 export default function Login() {
   const router = useRouter();
-
+const dispatch = useDispatch();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -17,7 +18,7 @@ export default function Login() {
 
       const result = await axios.post("http://localhost:5000/api/signin", data);
       console.log(result);
-      
+       dispatch(setCredentials({ user: result.data.user, token: result.data.token }));
       if ( result?.data?.user?.role==="user"){
         router.push("/user");
       }
