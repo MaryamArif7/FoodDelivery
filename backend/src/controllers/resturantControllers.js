@@ -19,15 +19,26 @@ export const addMenu = async (req, res) => {
         message: "Resturant does not exist",
       });
     }
+ const files = req.files; 
+    items.forEach((item, i) => {
+      if (files[i]) {
+        item.imageUrl = `/uploads/${files[i].filename}`;
+      }
+    });
+
+
     const newItems = await Item.insertMany(items);
+
+ 
     const addedItems = newItems.map((item) => item._id);
     resturant.menu.push(...addedItems);
     await resturant.save();
-    const updatedRestaurant = await resturant.populate("menu");
+
+    const updatedResturant = await resturant.populate("menu");
 
     res
       .status(200)
-      .json({ message: "Items added successfully", data: updatedRestaurant });
+      .json({ message: "Items added successfully", data: updatedResturant });
   } catch (error) {
     res.status(500).json({ message: "error", error: error.message });
   }
