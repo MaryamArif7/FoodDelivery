@@ -45,15 +45,15 @@ return(
           isMobile ? (isOpened ? 'w-full' : 'w-0') : (isOpened ? 'w-64' : 'w-16')
         )}
       >
-        <div className="h-screen flex flex-col  dark:text-white">
+        <div className="h-screen flex flex-col  ">
           <div className="flex flex-col items-start">
             <div className="flex flex-col items-start w-full p-3.5 md:p-4 sticky top-0 ">
               <Link href="/" className="flex items-center relative z-50">
                 <div className="font-semibold">
-                  <img src="/images/small-logo.png" className="w-8 h-8" alt="Rabbito Logo" />
+                  <img src="/small-logo.svg" className="w-8 h-8" alt="Food Rush" />
                 </div>
                 {isOpened && (
-                  <span className=" ml-5  text-xl font-bold  ">
+                  <span className=" ml-5 text-red-700 text-xl font-bold  ">
                     Food Rush
                   </span>
                 )}

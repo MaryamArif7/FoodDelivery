@@ -40,7 +40,10 @@ export const Dashboard = () => {
 
   return (
     <Sidebar>
-      <div>Admin</div>
+      <div>
+        <h1 className="text-4xl text-red-400">Hi</h1>Admin
+
+      </div>
       {pendingRestaurants.map((restaurant) => (
         <div key={restaurant._id}>
           <h2>{restaurant.name}</h2>
