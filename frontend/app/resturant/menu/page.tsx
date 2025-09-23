@@ -23,10 +23,15 @@ export default function Menu() {
       ...prev,
       //[id]: files ? files[0] : value → replace only the field that changed.
       [id]: files ? files[0] : value,
+      // Then setCurrentItem updates just that field:
+
+      //...prev → keep all the old fields (don’t wipe them out).
+
+      //[id]: files ? files[0] : value → replace only the field that changed.
     }));
   };
-//React controlled input →  must wire onChange → grab e.target.value → update state with it.
-// prev is needed to keep all the other fields in the form while only updating the one that changed.
+  //React controlled input →  must wire onChange → grab e.target.value → update state with it.
+  // prev is needed to keep all the other fields in the form while only updating the one that changed.
   const handleAddItem = () => {
     if (items.length >= 5) {
       toast.error("Max 5 items allowed");

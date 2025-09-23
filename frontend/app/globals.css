@@ -1,26 +1,126 @@
 @import "tailwindcss";
+@import "tailwindcss/preflight";
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Force light theme regardless of system preference */
+html {
+  color-scheme: light only; /* This tells browser to never apply dark mode */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Basic resets */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
+html,
+body {
+  height: 100vh;
+  background-color: white; /* Fallback */
+  color: black; /* Fallback */
+}
+
+/* Override any system dark mode preferences */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html {
+    color-scheme: light only; /* Force light even when system prefers dark */
+  }
+  
+  body {
+    background-color: white !important;
+    color: black !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Light theme color variables only */
+@layer base {
+  :root {
+    /* Background colors */
+    --background: 0 0% 100%;          /* Pure white */
+    --foreground: 0 0% 5%;            /* Almost black text */
+
+    /* Primary brand colors (food app - maybe orange/red) */
+    --primary: 20 100% 55%;           /* Vibrant orange */
+    --primary-foreground: 0 0% 100%;  /* White text */
+
+    /* Card and surface colors */
+    --card: 0 0% 100%;                /* White cards */
+    --card-foreground: 0 0% 5%;       /* Dark text on cards */
+
+    /* Secondary colors */
+    --secondary: 0 0% 96%;            /* Very light gray */
+    --secondary-foreground: 0 0% 10%; /* Dark text */
+
+    /* Muted colors for less important content */
+    --muted: 0 0% 96%;                /* Light gray background */
+    --muted-foreground: 0 0% 45%;     /* Medium gray text */
+
+    /* Accent colors */
+    --accent: 0 0% 96%;               /* Light accent */
+    --accent-foreground: 0 0% 10%;    /* Dark accent text */
+
+    /* Popover colors */
+    --popover: 0 0% 100%;             /* White popover */
+    --popover-foreground: 0 0% 5%;    /* Dark popover text */
+
+    /* Border and input colors */
+    --border: 0 0% 90%;               /* Light gray borders */
+    --input: 0 0% 90%;                /* Light gray input borders */
+    --ring: 20 100% 55%;              /* Focus ring (orange) */
+
+    /* Status colors */
+    --destructive: 0 84% 60%;         /* Red for errors */
+    --destructive-foreground: 0 0% 98%; /* Light text */
+    
+    --success: 120 50% 45%;           /* Green for success */
+    --success-foreground: 0 0% 98%;   /* Light text */
+    
+    --warning: 45 100% 55%;           /* Yellow/orange for warnings */
+    --warning-foreground: 0 0% 10%;   /* Dark text */
+
+    /* Border radius */
+    --radius: 0.5rem;
+  }
+}
+
+/* Apply base styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Ensure all interactive elements are accessible */
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    @apply ring-2 ring-ring ring-offset-2;
+  }
+}
+
+/* Food app specific utility classes */
+@layer components {
+  .food-card {
+    @apply bg-card text-card-foreground rounded-lg border shadow-sm p-4;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground px-4 py-2 rounded-md font-medium hover:bg-secondary/80;
+  }
 }
