@@ -36,7 +36,7 @@ const restaurantSchema = new mongoose.Schema(
     ],
 
     status: { type: String, enum: ["open", "close"], default: "open" },
-    approved: { type: String, enum: ["pending", "accepted"] },
+    approved: { type: String, enum: ["pending", "accepted","active"] },
     openingHours: { type: String, required: true },
     logo: String,
     coverImage: String,

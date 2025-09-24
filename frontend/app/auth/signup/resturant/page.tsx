@@ -5,35 +5,27 @@ import { useRouter } from "next/navigation";
 export default function Register() {
   const router = useRouter();
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData(e.currentTarget);
+      formData.append("role", "resturant");
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  try {
-    const formData = new FormData(e.currentTarget);
-    formData.append("role", "resturant");
-
-    const response = await axios.post(
-      "http://localhost:5000/api/signup/resturant",
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    );
-  } catch (error) {
-    console.error("Error signing up:", error);
-  }
-};
+      const response = await axios.post(
+        "http://localhost:5000/api/signup/resturant",
+        formData
+        // Remove the headers - let axios/browser set Content-Type automatically
+      );
+    } catch (error) {
+      console.error("Error signing up:", error);
+    }
+  };
 
   return (
     <>
       <div className="">
         <h1>Register Page</h1>
-        <form
-          className="flex flex-col gap-4 "
-          onSubmit={handleSubmit}
-        >
+        <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
           <label htmlFor="name">Name</label>
           <input
             type="text"
@@ -95,14 +87,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             placeholder=" Please enter your opening hours"
           />
           <label htmlFor="logo">Logo</label>
-          <input
-            type="file"
-            name="logo"
-            id="logo"
-        
-          />
-         
-         
+          <input type="file" name="logo" id="logo" />
 
           <button type="submit">Register</button>
         </form>

@@ -211,7 +211,7 @@ class AuthService {
         throw new Error("Invalid credentials");
       }
 
-      if (role === "restaurant" && user.approved !== "accepted") {
+      if (role === "restaurant" && user.approved !== "active") {
         throw new Error("Account not approved yet");
       }
 

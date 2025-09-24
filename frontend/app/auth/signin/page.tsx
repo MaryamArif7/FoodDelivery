@@ -23,7 +23,7 @@ const dispatch = useDispatch();
         router.push("/user");
       }
       if ( result?.data?.user?.role==="restaurant"){
-        router.push("/restaurant");
+        router.push("/resturant");
       }
       if ( result?.data?.user?.role==="driver"){
         router.push("/driver");

@@ -12,8 +12,9 @@ export const getAllResturants = async (req, res) => {
 export const addMenu = async (req, res) => {
   try {
     const { items } = req.body;
+    console.log("Received Items",items);
     const { id } = req.params;
-    const restaurant = await Restaurant.findById(id);
+    const restaurant = await Resturant.findById(id);
     if (!restaurant) {
       return res.status(404).json({
         message: "Restaurant does not exist",

@@ -9,9 +9,9 @@ export default function Resturants() {
     const fetchRestaurants = async () => {
       try {
         const pendingRestaurants = await axios.get(
-          "http://localhost:5000/api/restaurants/pending"
+          "http://localhost:5000/api/resturants/pending"
         );
-        setPendingRestaurants(pendingRestaurants.data);
+        setPendingRestaurants(pendingRestaurants.data.data || []);
       } catch (error) {
         console.error("Error fetching restaurants", error);
       }
@@ -25,7 +25,7 @@ export default function Resturants() {
   const approveRestaurant = async (id) => {
     try {
       const response = await axios.patch(
-        `http://localhost:5000/api/restaurants/${id}/approve`
+        `http://localhost:5000/api/resturants/${id}/approve`
       );
       if (response.status === 200) {
         setPendingRestaurants((prev) =>

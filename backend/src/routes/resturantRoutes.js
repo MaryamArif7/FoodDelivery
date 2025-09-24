@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 import express from "express";
-import { upload } from "../middleware/upload.js";
+import { createUploadMiddleware } from "../middlewares/upload.js";
 import {
   getAllResturants,
   addMenu,
 } from "../controllers/resturantControllers.js";
 const router = express.Router();
+let upload = createUploadMiddleware();
 router.get("/resturants", getAllResturants);
-router.post("/:id/addMenu", upload.array("images", 5), addMenu);
+router.use("/resturants/:id/addMenu", upload.array("images", 5), addMenu);
 export default router;

@@ -44,9 +44,14 @@ export default function Menu() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+console.log("Submitting Items",items);
+ if (items.length === 0) {
+    toast.error("Please add at least one item");
+    return;
+  }
     const formData = new FormData();
     formData.append("items", JSON.stringify(items));
+    console.log(items);
     items.forEach((item) => {
       if (item.image) {
         formData.append("images", item.image);
@@ -57,9 +62,7 @@ export default function Menu() {
       const res = await axios.post(
         `http://localhost:5000/api/resturants/${user.id}/addMenu`,
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+      
       );
       console.log("Menu added:", res.data);
     } catch (error) {
@@ -79,7 +82,7 @@ export default function Menu() {
           value={currentItem.name}
           onChange={handleChange}
           placeholder="Enter product name"
-          required
+          
         />
         <input
           type="text"
@@ -87,7 +90,7 @@ export default function Menu() {
           value={currentItem.description}
           onChange={handleChange}
           placeholder="Enter description"
-          required
+         
         />
         <input
           type="number"
@@ -95,19 +98,20 @@ export default function Menu() {
           value={currentItem.price}
           onChange={handleChange}
           placeholder="Enter price"
-          required
+        
         />
         <input
           type="file"
           id="image"
           onChange={handleChange}
           accept="image/*"
-          required
+      
         />
 
         <button type="button" onClick={handleAddItem}>
           Add Another Item
         </button>
+        <br />
         <button type="submit">Add Product</button>
       </form>
       <div>
