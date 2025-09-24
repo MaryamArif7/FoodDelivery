@@ -1,7 +1,9 @@
+import Link from "next/link"
+import {Dashboard} from "../../components/driver/dashboard";
 export default function Driver(){
     return(
         <div>
-            <h1>Driver App</h1>
+            <Dashboard />
         </div>
     )
 }

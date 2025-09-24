@@ -1,5 +1,5 @@
 "use client";
-import { Sidebar } from "../../../components/common/Sidebar";
+import { Sidebar } from "../../../components/admin/Sidebar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 export default function Resturants() {

@@ -1,5 +1,5 @@
 
-import { Sidebar } from "../../../components/common/Sidebar";
+import { Sidebar } from "../../../components/admin/Sidebar";
 export default function Drivers() {
   return (
     <Sidebar>

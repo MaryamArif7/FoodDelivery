@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import { Sidebar } from "../../../components/resturant/sidebar";
 export default function Menu() {
   const { user } = useSelector((state) => state.auth);
   const [items, setItems] = useState([]);
@@ -67,6 +68,8 @@ export default function Menu() {
   };
 
   return (
+    <Sidebar>
+
     <div>
       <h2>Add Menu Items (max 5)</h2>
       <form onSubmit={handleSubmit}>
@@ -126,5 +129,6 @@ export default function Menu() {
         </ul>
       </div>
     </div>
+    </Sidebar>
   );
 }

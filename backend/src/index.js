@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
 import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
 import authRoutes from "../src/routes/authRoutes.js"
 import cors from 'cors';
-
-dotenv.config();
 
 mongoose.connect('mongodb+srv://maryam7:maryam1306@maryam.xoazkgz.mongodb.net/?retryWrites=true&w=majority&appName=maryam',{
     useNewUrlParser:true,
