@@ -13,32 +13,32 @@ export const addMenu = async (req, res) => {
   try {
     const { items } = req.body;
     const { id } = req.params;
-    const resturant = await Resturant.findById(id);
-    if (!resturant) {
+    const restaurant = await Restaurant.findById(id);
+    if (!restaurant) {
       return res.status(404).json({
-        message: "Resturant does not exist",
+        message: "Restaurant does not exist",
       });
     }
- const files = req.files; 
+
+    const files = req.files;
     items.forEach((item, i) => {
       if (files[i]) {
-        item.imageUrl = `/uploads/${files[i].filename}`;
+        item.imageUrl = files[i].path;
       }
     });
 
-
     const newItems = await Item.insertMany(items);
 
- 
     const addedItems = newItems.map((item) => item._id);
-    resturant.menu.push(...addedItems);
-    await resturant.save();
+    restaurant.menu.push(...addedItems); // Fixed typo
+    await restaurant.save();
 
-    const updatedResturant = await resturant.populate("menu");
+    const updatedRestaurant = await restaurant.populate("menu");
 
-    res
-      .status(200)
-      .json({ message: "Items added successfully", data: updatedResturant });
+    res.status(200).json({
+      message: "Items added successfully",
+      data: updatedRestaurant,
+    });
   } catch (error) {
     res.status(500).json({ message: "error", error: error.message });
   }

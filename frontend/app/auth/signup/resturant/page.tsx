@@ -5,40 +5,33 @@ import { useRouter } from "next/navigation";
 export default function Register() {
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const formData = new FormData(e.currentTarget);
 
-      const data = {
-        name: formData.get("name"),
-        email: formData.get("email"),
-        password: formData.get("password"),
-        phone: formData.get("phone"),
-        address: formData.get("address"),
-        description: formData.get("description"),
-        openingHours: formData.get("openingHours"),
-        logo: formData.get("logo"),
-        coverImage: formData.get("coverImage"),
-        menu: formData.get("menu"),
-        role: "resturant",
-      };
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  try {
+    const formData = new FormData(e.currentTarget);
+    formData.append("role", "resturant");
 
-      const response = await axios.post(
-        "http://localhost:5000/api/signup/resturant",
-        data
-      );
-    } catch (error) {
-      console.error("Error signing up:", error);
-    }
-  };
+    const response = await axios.post(
+      "http://localhost:5000/api/signup/resturant",
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error signing up:", error);
+  }
+};
 
   return (
     <>
-      <div className="bg-gradient-to-b from-blue-50 to-white min-h-[calc(100vh-4rem)]">
+      <div className="">
         <h1>Register Page</h1>
         <form
-          className="flex flex-col gap-4 bg-black text-white"
+          className="flex flex-col gap-4 "
           onSubmit={handleSubmit}
         >
           <label htmlFor="name">Name</label>
@@ -103,26 +96,13 @@ export default function Register() {
           />
           <label htmlFor="logo">Logo</label>
           <input
-            type="text"
+            type="file"
             name="logo"
             id="logo"
-            placeholder=" Please enter your logo URL"
+        
           />
-          <label htmlFor="coverImage">Cover Image</label>
-          <input
-            type="text"
-            name="coverImage"
-            id="coverImage"
-            placeholder=" Please enter your cover image URL"
-          />
-          <label htmlFor="menu">Menu</label>
-          <input
-            type="text"
-            name="menu"
-            id="menu"
-            placeholder=" Please enter your menu items"
-            required
-          />
+         
+         
 
           <button type="submit">Register</button>
         </form>

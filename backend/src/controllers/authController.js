@@ -5,45 +5,42 @@ import Admin from "../models/Admin.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+
 export const SignUpUser = async (req, res) => {
   const { name, email, password, role, phone, address } = req.body;
   console.log(req.body);
-  
+
   try {
-  
     if (!name) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Please provide name" 
+      return res.status(400).json({
+        success: false,
+        message: "Please provide name",
       });
     }
-    
+
     if (!email || !password) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Email and password are required" 
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
       });
     }
 
     if (!role || role !== "user") {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Please provide a valid role" 
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid role",
       });
     }
-
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ 
-        success: false, 
-        message: "User with this email already exists" 
+      return res.status(409).json({
+        success: false,
+        message: "User with this email already exists",
       });
     }
 
-   
     const hashedPassword = await bcrypt.hash(password, 10);
-
 
     const newUser = new User({
       name,
@@ -55,18 +52,17 @@ export const SignUpUser = async (req, res) => {
     });
 
     await newUser.save();
-    
-    return res.status(201).json({ 
-      success: true, 
-      message: "User created successfully!" 
-    });
 
+    return res.status(201).json({
+      success: true,
+      message: "User created successfully!",
+    });
   } catch (error) {
     console.error("Error in SignUpUser:", error);
-    return res.status(500).json({ 
-      success: false, 
-      message: "Internal server error", 
-      error: error.message 
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
     });
   }
 };
@@ -80,20 +76,38 @@ export const SignUpResturant = async (req, res) => {
     address,
     description,
     openingHours,
-    logo,
-    coverImage,
- 
   } = req.body;
+
+  console.log(req.body);
+
   try {
     if (!name) {
-      return res.status(404).json("Please provide name");
+      return res.status(400).json({ message: "Please provide name" });
     }
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email and password is required" });
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
     }
+
+    const existingRestaurant = await Restaurant.findOne({ email });
+    if (existingRestaurant) {
+      return res.status(409).json({
+        message: "Restaurant with this email already exists",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
+    let logoUrl = null;
+    let coverImageUrl = null;
+
+    if (req.files?.logo?.[0]) {
+      logoUrl = req.files.logo[0].path;
+    }
+    if (req.files?.coverImage?.[0]) {
+      coverImageUrl = req.files.coverImage[0].path;
+    }
 
     if (role === "resturant") {
       const newResturant = new Restaurant({
@@ -106,15 +120,33 @@ export const SignUpResturant = async (req, res) => {
         address,
         description,
         openingHours,
-        logo,
-        coverImage,
-       
+        logo: logoUrl,
+        coverImage: coverImageUrl,
       });
+
       await newResturant.save();
-      return res.status(200).json("Resturant Created Successfully!");
+
+      return res.status(201).json({
+        success: true,
+        message: "Restaurant Created Successfully!",
+        data: {
+          id: newResturant._id,
+          name: newResturant.name,
+          email: newResturant.email,
+          logo: newResturant.logo,
+          coverImage: newResturant.coverImage,
+        },
+      });
+    } else {
+      return res.status(400).json({ message: "Invalid role" });
     }
-  } catch (e) {
-    res.status(401).json("Please Provide a valid role");
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 export const SignUpDriver = async (req, res) => {
@@ -155,12 +187,13 @@ class AuthService {
       Restaurant.findOne({ email }),
       Driver.findOne({ email }),
     ]);
-    
+
     if (admin) return { user: admin, role: "admin", model: "Admin" };
     if (user) return { user, role: "user", model: "User" };
-    if (restaurant) return { user: restaurant, role: "restaurant", model: "Restaurant" };
+    if (restaurant)
+      return { user: restaurant, role: "restaurant", model: "Restaurant" };
     if (driver) return { user: driver, role: "driver", model: "Driver" };
-    
+
     return null;
   }
 
@@ -172,8 +205,7 @@ class AuthService {
       }
 
       const { user, role, model } = validUser;
-      
-      
+
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
         throw new Error("Invalid credentials");
@@ -183,7 +215,6 @@ class AuthService {
         throw new Error("Account not approved yet");
       }
 
-    
       await mongoose.model(model).findByIdAndUpdate(user._id, {
         lastLogin: new Date(),
       });
@@ -209,7 +240,7 @@ class AuthService {
         },
       };
     } catch (e) {
-      throw e; 
+      throw e;
     }
   }
 }
@@ -217,7 +248,7 @@ class AuthService {
 export const SignIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-    
+
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -226,35 +257,33 @@ export const SignIn = async (req, res) => {
     }
 
     const result = await AuthService.signIn(email, password);
-    
-    return res.status(200).json({ 
+
+    return res.status(200).json({
       success: true,
       message: "Login Successful",
       ...result,
     });
-    
   } catch (error) {
     console.error("SignIn Error:", error);
-    
+
     if (error.message === "Invalid credentials") {
-      return res.status(401).json({ 
-        success: false, 
-        message: error.message 
+      return res.status(401).json({
+        success: false,
+        message: error.message,
       });
     }
 
     if (error.message.includes("not approved")) {
-      return res.status(403).json({ 
-        success: false, 
-        message: error.message 
+      return res.status(403).json({
+        success: false,
+        message: error.message,
       });
     }
 
-   
     return res.status(500).json({
       success: false,
       message: "Internal server error",
-      error: error.message
+      error: error.message,
     });
   }
 };
