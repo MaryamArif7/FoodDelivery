@@ -50,19 +50,23 @@ console.log("Submitting Items",items);
     return;
   }
     const formData = new FormData();
-    formData.append("items", JSON.stringify(items));
+    const itemsWithoutFiles = items.map(({ image, ...rest }) => rest);
+    formData.append("items", JSON.stringify(itemsWithoutFiles));
     console.log(items);
-    items.forEach((item) => {
-      if (item.image) {
-        formData.append("images", item.image);
-      }
-    });
+ items.forEach((item) => {
+  if (item.image) {
+    formData.append("images", item.image);
+  }
+});
+
 
     try {
       const res = await axios.post(
         `http://localhost:5000/api/resturants/${user.id}/addMenu`,
         formData,
-      
+        {
+          headers: { "Content-Type": "multipart/form-data" }
+        }
       );
       console.log("Menu added:", res.data);
     } catch (error) {
