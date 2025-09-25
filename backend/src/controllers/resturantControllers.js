@@ -26,6 +26,7 @@ export const addMenu = async (req, res) => {
       if (files[i]) {
         item.imageUrl = files[i].path; // assign file path
       }
+        item.restaurantId = restaurant._id; 
     });
 
     const newItems = await Item.insertMany(items);
