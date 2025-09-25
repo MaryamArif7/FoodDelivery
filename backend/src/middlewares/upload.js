@@ -25,6 +25,6 @@ export const createUploadMiddleware = () => {
       ],
     },
   });
-
+ console.log("Store Configured",storage);
   return multer({ storage });
 };
