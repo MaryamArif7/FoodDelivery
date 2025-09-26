@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+
 /* Always light theme */
 :root {
   --background: #ffffff;
@@ -22,12 +23,52 @@ html {
 body {
   background: #ffffff !important;
   color: #000000 !important;
-  font-family:  sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
-.bg-1{
-  background-color: #FC8019;
+
+.bg-1 {
+  background-color: #FEB21A;
 }
-.h1{
-  color:#FC8019;
-  
+
+.bg-2 {
+  background-color: #ED3F27;
+}
+
+.primary-text {
+  color: #E62727;
+
+}
+
+.secondary-text {
+  color: #FEB21A;
+}
+
+.hero-heading {
+  font-size: 48px;
+  margin-bottom: 16px;
+  line-height: 1.2;
+  color:#C53030;
+}
+
+.hero-subheading {
+  font-size: 20px;
+  opacity: 0.9;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.cta-button {
+  background: white;
+  color: #ef4444;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 24px;
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
 }
