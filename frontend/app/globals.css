@@ -32,6 +32,7 @@ body {
 
 .bg-2 {
   background-color: #ED3F27;
+
 }
 
 .primary-text {
@@ -63,16 +64,10 @@ body {
   line-height: 1.5;
 }
 
-.cta-button {
-  background: white;
-  color: #ef4444;
-  padding: 12px 24px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  margin-top: 24px;
-  display: inline-block;
-  transition: transform 0.2s;
+.cta-primary {
+@apply bg-[#ED3F27] hover:bg-red-700 text-white px-8 py-4 rounded-xl 
+         font-bold text-lg transition-all duration-300 
+         hover:scale-105 hover:shadow-xl flex items-center justify-center;
 }
 
 .cta-button:hover {
