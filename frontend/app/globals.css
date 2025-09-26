@@ -44,10 +44,16 @@ body {
 }
 
 .hero-heading {
-  font-size: 48px;
+  
   margin-bottom: 16px;
   line-height: 1.2;
-  color:#C53030;
+  color:#DD0303;
+}
+.hero-span{
+ 
+  margin-bottom: 16px;
+  line-height: 1.2;
+  color:#FAB12F;
 }
 
 .hero-subheading {

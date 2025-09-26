@@ -2,9 +2,9 @@ import Link from "next/link"
 
 export const Nav = () => {
   return (
-    <nav className="flex items-center justify-between   ml-20 mr-20">
-      {/* Option 1: Subtle shadow and hover effect */}
-  <div className="">
+    <nav className="flex items-center justify-between   ">
+    
+  <div>
   <img 
     src="/logo3.png" 
     alt="Company Logo" 
