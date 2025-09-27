@@ -44,7 +44,7 @@ export const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="group bg-2 hover:bg-red-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center">
+            <button className="cta-primary ">
               Start Ordering
               <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
@@ -58,12 +58,12 @@ export const Hero = () => {
         <div>
           <img className="w-96 h-96" src="/girl.jpg" />
         </div>
-        <div className="py-16 px-8 lg:px-16 ">
-          <div className="max-w-md mx-auto space-y-8">
+        <div className="py-16 px-8  ">
+          <div className="max-w-md mx-auto space-y-6">
             {services.map((service, index) => (
               <div key={service.title} className="flex items-start space-x-6">
                 {/* Icon container */}
-                <div className="flex-shrink-0 w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center">
+                <div className="flex-shrink-0 w-16 h-16  rounded-2xl shadow-sm flex items-center justify-center">
                   {service.icon}
                 </div>
 

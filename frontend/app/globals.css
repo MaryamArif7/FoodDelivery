@@ -70,6 +70,3 @@ body {
          hover:scale-105 hover:shadow-xl flex items-center justify-center;
 }
 
-.cta-button:hover {
-  transform: translateY(-2px);
-}
