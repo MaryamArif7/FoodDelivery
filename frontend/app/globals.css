@@ -63,7 +63,7 @@ body {
   max-width: 600px;
   line-height: 1.5;
 }
-
+/* using tailwind*/
 .cta-primary {
 @apply bg-[#ED3F27] hover:bg-red-700 text-white px-8 py-4 rounded-xl 
          font-bold text-lg transition-all duration-300 
