@@ -2,7 +2,7 @@ import Resturant from "../models/Resturants.js";
 import Item from "../models/Item.js";
 export const getAllResturants = async (req, res) => {
   try {
-    const getAllResturants = await Resturant.find({ approved: "active" });
+    const getAllResturants = await Resturant.find({ approved: "active" }).populate('menu');
     res.status(200).json({ message: "success", data: getAllResturants });
   } catch (error) {
     res.status(500).json({ message: "error", error: error.message });

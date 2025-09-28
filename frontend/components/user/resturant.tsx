@@ -2,12 +2,13 @@
 import {useState,useEffect} from 'react';
 import { Card } from './card';
 import axios from 'axios';
-export const Resturants=()=>{
+import { ResturantDetails } from './RestaurantDetails ';
+export const ResturantSection=()=>{
   const [resturants,setResturants]=useState([]);
   useEffect(()=>{
     const fetchData=async()=>{
       const res=await axios.get("http://localhost:5000/api/resturants");
-      setResturants(res.data);
+      setResturants(res.data.data);
     }
     fetchData();
   },[]);
@@ -16,14 +17,7 @@ export const Resturants=()=>{
       <h1>View All Resturants</h1>
       <ul>
         {resturants.map((resturant)=>(
-          <li key={resturant.id}>
-            <Card
-              name={resturant.name}
-              description={resturant.description}
-              price={resturant.price}
-              image={resturant.image}
-            />
-          </li>
+        <ResturantDetails key={resturant._id} resturant={resturant} />
         ))}
       </ul>
     </>
