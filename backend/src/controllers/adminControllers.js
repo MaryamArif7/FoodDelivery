@@ -61,3 +61,19 @@ export const adminStats = async (req, res) => {
     });
   }
 };
+export const allUsers=async(req,res)=>{
+try {
+    const getAllUsers = await User.find();
+    res.status(200).json({ message: "success", data:  getAllUsers});
+  } catch (error) {
+    res.status(500).json({ message: "error", error: error.message });
+  }
+}
+export const allDrivers=async(req,res)=>{
+try {
+    const getAllDrivers = await Driver.find();
+    res.status(200).json({ message: "success", data:  getAllDrivers});
+  } catch (error) {
+    res.status(500).json({ message: "error", error: error.message });
+  }
+}
