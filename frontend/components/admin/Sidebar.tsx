@@ -69,7 +69,7 @@ export function Sidebar({ children }: { children?: React.ReactNode }) {
       </div>
 
      
-      <div className="flex-1 overflow-y-auto bg-gray-50">
+      <div className="flex-1 overflow-y-auto bg-white">
         <main className="p-8">{children}</main>
       </div>
     </div>
