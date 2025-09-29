@@ -1,17 +1,22 @@
 "use client";
 import { Sidebar } from "../../../components/admin/Sidebar";
+import { ActiveResturantCard } from "@/components/admin/ActiveResturantCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
 export default function Resturants() {
   const [pendingRestaurants, setPendingRestaurants] = useState([]);
-
+  const [activeRestaurants, setActiveRestaurants] = useState([]);
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const pendingRestaurants = await axios.get(
-          "http://localhost:5000/api/resturants/pending"
-        );
-        setPendingRestaurants(pendingRestaurants.data.data || []);
+        const [pendingRes, activeRes] = await Promise.all([
+          axios.get("http://localhost:5000/api/resturants/pending"),
+          axios.get("http://localhost:5000/api/resturants"),
+        ]);
+        console.log(activeRes);
+        setPendingRestaurants(pendingRes.data.data || []);
+        setActiveRestaurants(activeRes.data.data || []);
+        console.log(activeRestaurants);
       } catch (error) {
         console.error("Error fetching restaurants", error);
       }
@@ -38,18 +43,37 @@ export default function Resturants() {
   };
   return (
     <Sidebar>
-      <div>all resturant here</div>
-      {pendingRestaurants.map((restaurant) => (
-        <div key={restaurant._id}>
-          <h2>{restaurant.name}</h2>
-          <button>View Details</button>
-          <button onClick={() => approveRestaurant(restaurant._id)}>
-            Approve
-          </button>
+      <h1 className="text-3xl font-bold">Manage All Resturants Here</h1>
+
+      <div className="flex justify-between mt-20">
+        <div className="border border-gray-200 p-8 bg-gray-50 ">
+          <h1 className="text-xl font-bold mb-4 ">All the Active Resturants</h1>
+           <div className="h-80 overflow-y-auto space-y-4">
+            {activeRestaurants.map((activeResturant) => {
+              return (
+                <ActiveResturantCard
+                  key={activeResturant._id}
+                  name={activeResturant?.name}
+                  createdAt={activeResturant.createdAt}
+                />
+              );
+            })}
+          </div>
         </div>
-      ))}
-      <div>
-        {pendingRestaurants.length === 0 && <p>No pending restaurants</p>}
+        <div>
+          {pendingRestaurants.map((restaurant) => (
+            <div key={restaurant._id}>
+              <h2>{restaurant.name}</h2>
+              <button>View Details</button>
+              <button onClick={() => approveRestaurant(restaurant._id)}>
+                Approve
+              </button>
+            </div>
+          ))}
+          <div>
+            {pendingRestaurants.length === 0 && <p>No pending restaurants</p>}
+          </div>
+        </div>
       </div>
     </Sidebar>
   );

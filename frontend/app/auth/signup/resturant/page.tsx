@@ -26,12 +26,12 @@ export default function Register() {
       <div className="">
         <h1>Register Page</h1>
         <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name">Resturant Name</label>
           <input
             type="text"
             name="name"
             id="name"
-            placeholder=" Please enter your name"
+            placeholder=" Please enter your Resturant name"
             required
           />
 
