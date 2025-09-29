@@ -1,6 +1,7 @@
 "use client";
 import { Sidebar } from "../../../components/admin/Sidebar";
 import { ActiveResturantCard } from "@/components/admin/ActiveResturantCard";
+import { PendingRestaurantCard } from "@/components/admin/PedingResturantCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
 export default function Resturants() {
@@ -45,10 +46,10 @@ export default function Resturants() {
     <Sidebar>
       <h1 className="text-3xl font-bold">Manage All Resturants Here</h1>
 
-      <div className="flex justify-between mt-20">
-        <div className="border border-gray-200 p-8 bg-gray-50 ">
-          <h1 className="text-xl font-bold mb-4 ">All the Active Resturants</h1>
-           <div className="h-80 overflow-y-auto space-y-4">
+      <div className="flex justify-between mt-20 gap-5">
+        <div className="border border-gray-200 p-8  ">
+          <h1 className="text-xl font-bold mb-4 ">Active Resturants</h1>
+          <div className="h-80 overflow-y-auto space-y-4">
             {activeRestaurants.map((activeResturant) => {
               return (
                 <ActiveResturantCard
@@ -61,17 +62,24 @@ export default function Resturants() {
           </div>
         </div>
         <div>
-          {pendingRestaurants.map((restaurant) => (
-            <div key={restaurant._id}>
-              <h2>{restaurant.name}</h2>
-              <button>View Details</button>
-              <button onClick={() => approveRestaurant(restaurant._id)}>
-                Approve
-              </button>
-            </div>
-          ))}
-          <div>
-            {pendingRestaurants.length === 0 && <p>No pending restaurants</p>}
+         
+          <div className="border border-gray-200 p-8">
+             <h2 className="text-xl font-bold mb-4">Pending Restaurants</h2>
+            {pendingRestaurants.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <p>No pending restaurants</p>
+              </div>
+            ) : (
+              <div className="h-80 overflow-y-auto spacey-4">
+                {pendingRestaurants.map((restaurant) => (
+                  <PendingRestaurantCard
+                    key={restaurant._id}
+                    restaurant={restaurant}
+                    onApprove={approveRestaurant}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
