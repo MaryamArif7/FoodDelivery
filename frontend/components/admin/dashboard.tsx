@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidebar } from "../common/Sidebar";
+import { Sidebar } from "../admin/Sidebar";
 
 
 export const Dashboard = () => {
