@@ -185,13 +185,13 @@ export default function Menu() {
                   <button
                     type="button"
                     onClick={handleAddItem}
-                    className="flex-1 bg-1 hover:bg-orange-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 transform active:scale-95 shadow-md"
+                    className="flex-1 bg-2 hover:bg-orange-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 transform active:scale-95 shadow-md"
                   >
                     + Add to List
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 transform active:scale-95 shadow-md"
+                    className="flex-1 bg-1 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 transform active:scale-95 shadow-md"
                   >
                     Submit Menu
                   </button>
