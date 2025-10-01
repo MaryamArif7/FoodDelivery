@@ -85,9 +85,9 @@ console.log("Submitting Items",items);
 
   return (
     <Sidebar>
-      {!user?.menu ? (
+      {user?.menu.length>1 ? (
         <div>
-          <h2>Add Menu Items (max 5)</h2>
+          <h2 className="text-3xl font-bold mt-10">Add Your Menu Items Here</h2>
           <form onSubmit={handleSubmit}>
             <input
               type="text"
