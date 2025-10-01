@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { Sidebar } from "../../../components/resturant/sidebar";
+import { MenuCard } from "@/components/resturant/MenuCard";
 export default function Menu() {
   const { user } = useSelector((state) => state.auth);
+  console.log(user);
   const [items, setItems] = useState([]);
   const [currentItem, setCurrentItem] = useState({
     name: "",
@@ -73,70 +75,93 @@ console.log("Submitting Items",items);
       console.error("Error:", error);
     }
   };
+  const onMenuEdit=()=>{
+
+  }
+   const onMenuDelete=()=>{
+    
+  }
+
 
   return (
     <Sidebar>
+      {!user?.menu ? (
+        <div>
+          <h2>Add Menu Items (max 5)</h2>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              id="name"
+              value={currentItem.name}
+              onChange={handleChange}
+              placeholder="Enter product name"
+            />
+            <input
+              type="text"
+              id="description"
+              value={currentItem.description}
+              onChange={handleChange}
+              placeholder="Enter description"
+            />
+            <input
+              type="number"
+              id="price"
+              value={currentItem.price}
+              onChange={handleChange}
+              placeholder="Enter price"
+            />
+            <input
+              type="file"
+              id="image"
+              onChange={handleChange}
+              accept="image/*"
+            />
 
-    <div>
-      <h2>Add Menu Items (max 5)</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          id="name"
-          value={currentItem.name}
-          onChange={handleChange}
-          placeholder="Enter product name"
-          
-        />
-        <input
-          type="text"
-          id="description"
-          value={currentItem.description}
-          onChange={handleChange}
-          placeholder="Enter description"
-         
-        />
-        <input
-          type="number"
-          id="price"
-          value={currentItem.price}
-          onChange={handleChange}
-          placeholder="Enter price"
-        
-        />
-        <input
-          type="file"
-          id="image"
-          onChange={handleChange}
-          accept="image/*"
-      
-        />
-
-        <button type="button" onClick={handleAddItem}>
-          Add Another Item
-        </button>
-        <br />
-        <button type="submit">Add Product</button>
-      </form>
-      <div>
-        <h2>Preview Items</h2>
-        <ul>
-          {items.map((item, index) => (
-            <li key={index}>
-              {item.name}
-              <br />
-              {item.description}
-              <br />
-              {item.price}
-              <br />
-              {item.image && (
-                <img src={URL.createObjectURL(item.image)} alt={item.name} />
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+            <button type="button" onClick={handleAddItem}>
+              Add Another Item
+            </button>
+            <br />
+            <button type="submit">Add Product</button>
+          </form>
+          <div>
+            <h2>Preview Items</h2>
+            <ul>
+              {items.map((item, index) => (
+                <li key={index}>
+                  {item.name}
+                  <br />
+                  {item.description}
+                  <br />
+                  {item.price}
+                  <br />
+                  {item.image && (
+                    <img
+                      src={URL.createObjectURL(item.image)}
+                      alt={item.name}
+                    />
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <h2 className="mt-10 font-bold text-3xl mb-10">
+            Manage your Menu Here
+          </h2>
+          <div className="flex justify-between gap-5 ">
+            {user.menu.map((item, index) => (
+              <MenuCard
+                key={item._id}
+                item={item}
+                onEdit={onMenuEdit}
+                onDelete={onMenuDelete}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </Sidebar>
   );
 }

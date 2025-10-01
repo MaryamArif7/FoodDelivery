@@ -229,6 +229,10 @@ class AuthService {
       const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
         expiresIn: "7d",
       });
+  const userMenu = await mongoose
+    .model(model)
+    .findById(user._id)
+    .populate("menu");
 
       return {
         token,
@@ -237,6 +241,7 @@ class AuthService {
           name: user.name,
           email: user.email,
           role: role,
+          menu:userMenu.menu,
         },
       };
     } catch (e) {

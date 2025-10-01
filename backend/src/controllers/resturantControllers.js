@@ -17,30 +17,21 @@ export const addMenu = async (req, res) => {
       return res.status(404).json({ message: "Restaurant does not exist" });
     }
 
-    // 1. Parse items (was string)
     const items = JSON.parse(req.body.items);
-    console.log("Recived Items",items)
+    console.log("Recived Items", items);
     const files = req.files;
-console.log("Recived Files",files);
-    // 2. Merge image + restaurantId
-
+    console.log("Recived Files", files);
     items.forEach((item, i) => {
       if (files[i]) {
-        item.imageUrl = files[i].path; 
+        item.imageUrl = files[i].path;
       }
-      console.log("item after mapping the path",item);
-        item.restaurantId = restaurant._id; 
+      console.log("item after mapping the path", item);
+      item.restaurantId = restaurant._id;
     });
-
-    // 3. Insert items
     const newItems = await Item.insertMany(items);
-
-    // 4. Link them to restaurant
     const addedItems = newItems.map((item) => item._id);
     restaurant.menu.push(...addedItems);
     await restaurant.save();
-
-    // 5. Populate and send back
     const updatedRestaurant = await restaurant.populate("menu");
 
     res.status(200).json({
