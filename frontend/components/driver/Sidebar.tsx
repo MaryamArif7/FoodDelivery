@@ -2,96 +2,74 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { FiLogOut, FiX } from "react-icons/fi";
 import { cn } from "../../lib/utils";
 import c from "classnames";
 import { LayoutDashboard, Utensils, Truck, Users } from "lucide-react";
-import {
-  HiOutlineChevronDoubleLeft,
-  HiOutlineChevronDoubleRight,
-} from "react-icons/hi";
+import { RefreshCw, FileText, Settings, Code, LogOut } from "lucide-react";
+
 const Links = [
   { name: "Dashboard", href: "/driver", icon: LayoutDashboard },
-  { name: "Orders", href: "/driver/orders", icon: Utensils },
+  { name: "Orders", href: "/driver/orders", icon: Truck },
 
 ];
-const Links2 = [{ name: "Logout", href: "/" }];
+
 export function Sidebar({ children }: { children?: React.ReactNode }) {
   const [isMobile, setIsMobile] = useState(false);
-  const [isOpened, setIsOpened] = useState(false);
-  const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     const handleResize = () => {
-      const check = window.innerWidth <= 820;
-      setIsMobile(check);
-      if (check) setIsOpened(false);
+      setIsMobile(window.innerWidth <= 820);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  return (
-    <div className="flex flex-row-reverse h-screen  border-gray-600  ">
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <main className="flex-1 overflow-y-auto">{children}</main>
-      </div>
-      <div
-        className={c(
-          " overflow-y-auto overflow-x-hidden rounded-r-[14px]  border-r border-gray-400",
-          isMobile ? (isOpened ? "w-full" : "w-0") : isOpened ? "w-64" : "w-16"
-        )}
-      >
-        <div className="h-screen flex flex-col  ">
-          <div className="flex flex-col items-start">
-            <div className="flex flex-col items-start w-full p-3.5 md:p-4 sticky top-0 ">
-              <Link href="/admin" className="flex items-center relative z-50 ">
-                <div className="font-semibold">
-                  <img
-                    src="/small-logo.svg"
-                    className="w-14 h-14"
-                    alt="Food Rush"
-                  />
-                </div>
-                {isOpened && (
-                  <span className=" ml-2 text-3xl font-bold h1 ">
-                    Food Rush
-                  </span>
-                )}
-              </Link>
 
-              <div
-                className="flex items-center justify-end h-12 w-8 cursor-pointer absolute right-0 top-3"
-                onClick={() => setIsOpened(!isOpened)}
-              >
-                {isMobile ? (
-                  <button className="p-1 rounded focus:outline-none mr-10">
-                    <FiX className=" font-bold w-6 h-6" />
-                  </button>
-                ) : isOpened ? (
-                  <HiOutlineChevronDoubleLeft className=" text-black w-4 h-4 mr-4 mb-2 font-bold" />
-                ) : (
-                  <HiOutlineChevronDoubleRight className=" text-black w-4 h-4 font-bold" />
-                )}
-              </div>
+  return (
+    <div className="flex h-screen">
+      <div className="w-64 bg-gradient-to-br from-yellow-400 via-yellow-500 to-amber-500 flex flex-col justify-between shadow-2xl">
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-12">
+            <div className="w-12 h-12">
+              <img className="object-contain" src="/logo3.png" />
             </div>
-            <div className="mt-6 w-full ml-5 ">
-              {Links.map(({ name, href, icon: Icon }) => (
+            <span className="text-2xl font-bold text-gray-900">Food Rush</span>
+          </div>
+
+          <nav className="space-y-2">
+            {Links.map(({ name, href, icon: Icon }) => {
+              const isActive = pathname === href;
+              return (
                 <Link
                   key={href}
                   href={href}
-                  className={`flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 ${
-                    pathname === href ? "bg-1 text-white" : ""
-                  }`}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200",
+                    isActive
+                      ? "bg-black/10 text-gray-900 font-medium"
+                      : "text-gray-800 hover:bg-black/5"
+                  )}
                 >
                   <Icon className="w-5 h-5" />
-                  {isOpened && <span>{name}</span>}
+                  <span className="text-sm">{name}</span>
                 </Link>
-              ))}
-            </div>
-          </div>
+              );
+            })}
+          </nav>
         </div>
+
+        <div className="p-6 border-t border-black/10">
+          <button className="flex items-center gap-3 px-4 py-3 w-full text-gray-800 hover:bg-black/5 rounded-lg transition-all duration-200">
+            <LogOut className="w-5 h-5" />
+            <span className="text-sm">Log out</span>
+          </button>
+        </div>
+      </div>
+
+     
+      <div className="flex-1 overflow-y-auto bg-white">
+        <main className="p-8">{children}</main>
       </div>
     </div>
   );

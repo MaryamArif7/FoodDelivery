@@ -1,4 +1,4 @@
-"use client";
+
 
 import { Sidebar } from "../driver/Sidebar";
 

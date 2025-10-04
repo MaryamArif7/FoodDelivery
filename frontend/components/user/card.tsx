@@ -52,6 +52,16 @@ export const Card = ({ name, description, price, image }) => {
             )}
           </span>
         </button>
+          <button className="w-full mt-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-4 focus:ring-red-300">
+          <span className="flex items-center justify-center space-x-2">
+            <span>Add To Cart</span>
+            {isHovered && (
+              <svg className="w-4 h-4 transform translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            )}
+          </span>
+        </button>
       </div>
     </div>
   );
