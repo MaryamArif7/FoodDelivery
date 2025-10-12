@@ -7,7 +7,6 @@ const persistConfig = { key: "root", storage, whitelist: ["auth"] };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
   reducer: persistedReducer, 
-  // middleware: (getDefault) => getDefault(), // RTK default middleware is fine
 });
 export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof rootReducer>;
