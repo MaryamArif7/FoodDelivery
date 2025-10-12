@@ -1,16 +1,22 @@
-import moongoose from 'mongoose';
-const  cartSchema=new moongoose.Schema({
+import mongoose from 'mongoose';
+const  cartSchema=new mongoose.Schema({
    userId:{
-    type:moongoose.Schema.Types.ObjectId,
+    type:mongoose.Schema.Types.ObjectId,
     ref:"User",
     required:true,
    },
+    
    items: [{
     menuId:{
-        type:moongoose.Schema.Typesype.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:'Item',
         required:true,
     },
+    restaurantId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Restaurant",
+    required: true,
+  },
       quantity: {
           type: Number,
           required: true,
@@ -18,4 +24,4 @@ const  cartSchema=new moongoose.Schema({
         },
    }],
 } ,{timestamps:true});
-export default moongoose.model("Cart",cartSchema);
+export default mongoose.model("Cart",cartSchema);

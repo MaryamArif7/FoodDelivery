@@ -5,19 +5,31 @@ import toast, { Toaster } from 'react-hot-toast';
 export const ResturantDetails = ({ resturant }) => {
   const dispatch=useDispatch();
  const { user } = useSelector((state) => state.auth);
-  
-  const handleAddToCart=(menuId)=>{
-  dispatch(addToCart({
-    id:user?.id,
-    menuId:menuId,
-    quantity:1,
-  })).then((data)=>{
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user?._id));
-        toast.success("Menu Added to the cart")}});
 
-  
-  }
+ const handleAddToCart = (menuId) => {
+   dispatch(
+     addToCart({
+       id: user?._id,
+       resturantId: resturant?._id,
+       menuId: menuId,
+       quantity: 1,
+     })
+   ).then((data) => {
+     if (data?.payload?.success) {
+       dispatch(fetchCartItems(user?._id));
+       toast.success("Menu Added to the cart");
+     }
+     else {
+       
+        toast.error(data?.payload?.message || "Failed to add item to cart");
+      }
+   })
+   .catch((error) => {
+     
+      toast.error("Something went wrong");
+      console.error("Add to cart error:", error);
+    });
+ };
   return (
     <div className=" overflow-hidden  hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-1">
       <div className="px-8 mt-2 primary-text">

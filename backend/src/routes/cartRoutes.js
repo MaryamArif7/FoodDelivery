@@ -1,5 +1,5 @@
 import express from 'express';
-import { addToCart,updateCartItemQuantity,deleteCartItems,fetchCartItems } from '../controllers/cartControllers';
+import { addToCart,updateCartItemQuantity,deleteCartItems,fetchCartItems } from '../controllers/cartControllers.js';
 const router=express.Router();
 router.post('/add',addToCart);
 router.put('/update/:itmeId',updateCartItemQuantity);
