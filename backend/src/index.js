@@ -14,7 +14,7 @@ import authRoutes from "./routes/authRoutes.js"
 import resturantRoutes from "./routes/resturantRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
-const paymentRoutes = require('./routes/paymentRoutes');
+import paymentRoutes  from './routes/paymentRoutes';
 import cors from 'cors';
 mongoose.connect('mongodb+srv://maryam7:maryam1306@maryam.xoazkgz.mongodb.net/?retryWrites=true&w=majority&appName=maryam',{
     useNewUrlParser:true,
