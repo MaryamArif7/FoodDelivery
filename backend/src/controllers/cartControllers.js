@@ -121,7 +121,7 @@ export const updateCartItemQuantity = async (req, res) => {
     });
   }
 };
-export const deleteCartItems=async(req,res)=>{
+export const deleteCartItems = async (req, res) => {
   try {
     const { id, menuId, quantity, restaurantId } = req.body;
     if (!id || !menuId || !quantity) {
@@ -143,29 +143,57 @@ export const deleteCartItems=async(req,res)=>{
         success: false,
       });
     }
-    let cart=await Cart.findOne({userId:id});
+    let cart = await Cart.findOne({ userId: id });
 
-    cart.items = cart.items.filter(
-      item => item.menuId.toString() !== menuId
-    );
+    cart.items = cart.items.filter((item) => item.menuId.toString() !== menuId);
 
     await cart.save();
-    await cart.populate('items.menuId items.restaurantId');
+    await cart.populate("items.menuId items.restaurantId");
 
     return res.status(200).json({
       message: "Item removed from cart",
       success: true,
-      cart
+      cart,
     });
-
   } catch (e) {
     console.error("Error in addToCart:", error);
     return res.status(500).json({
       message: "Internal server error",
-      success: false
+      success: false,
     });
   }
-}
-export const fetchCartItems=(req,res)=>{
-    
-}
+};
+export const fetchCartItems = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({
+        message: "User ID is required",
+        success: false,
+      });
+    }
+
+    const cart = await Cart.findOne({ userId: id }).lean();
+
+    if (!cart) {
+      return res.status(404).json({
+        message: "Cart not found",
+        success: false,
+        items: [],
+      });
+    }
+
+    return res.status(200).json({
+      message: "Cart items fetched successfully",
+      success: true,
+      items: cart.items,
+    });
+  } catch (error) {
+    console.error("Error in fetchCartItems:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+};
