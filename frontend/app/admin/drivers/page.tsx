@@ -61,6 +61,9 @@ const formData = new FormData(e.currentTarget);
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 border-b">
                     Email
                   </th>
+                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 border-b">
+                    Phone Number
+                  </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 border-b">
                     Actions
                   </th>
@@ -78,6 +81,9 @@ const formData = new FormData(e.currentTarget);
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-800 border-b">
                         {driver.email}
+                      </td>
+                       <td className="px-6 py-4 text-sm text-gray-800 border-b">
+                        {driver.phonedriver}
                       </td>
                       <td className="px-6 py-4 text-sm border-b">
                         <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors">

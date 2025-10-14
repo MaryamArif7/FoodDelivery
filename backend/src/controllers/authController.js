@@ -150,32 +150,86 @@ export const SignUpResturant = async (req, res) => {
   }
 };
 export const SignUpDriver = async (req, res) => {
-  console.log(req.body);
-  const { name, email, phone, password, role } = req.body;
-
+  console.log('📦 Request body:', req.body);
+  console.log('🔍 Role value:', req.body.role);
+  console.log('🔍 Role type:', typeof req.body.role);
+  
   try {
+    const { name, email, phone, password, role } = req.body;
+
+    // Validation
     if (!name) {
-      return res.status(404).json("Please provide name");
+      return res.status(400).json({ success: false, message: "Please provide name" });
     }
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email and password is required" });
+      return res.status(400).json({ success: false, message: "Email and password is required" });
     }
+    if (!phone) {
+      return res.status(400).json({ success: false, message: "Phone number is required" });
+    }
+    if (!role) {
+      return res.status(400).json({ success: false, message: "Role is required" });
+    }
+    if (role !== "driver") {
+      return res.status(400).json({ success: false, message: "Invalid role. Must be 'driver'" });
+    }
+
+    // Check if driver already exists
+    const existingDriver = await Driver.findOne({ email });
+    if (existingDriver) {
+      return res.status(409).json({ success: false, message: "Driver with this email already exists" });
+    }
+
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    if (role === "driver") {
-      const newDriver = new Driver({
-        name,
-        email,
-        password: hashedPassword,
-        role,
-        phone,
+
+    // Create new driver
+    const newDriver = new Driver({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+      phone,
+    });
+
+    await newDriver.save();
+    
+    return res.status(201).json({ 
+      success: true, 
+      message: "Driver created successfully!",
+      data: {
+        id: newDriver._id,
+        name: newDriver.name,
+        email: newDriver.email,
+        phone: newDriver.phone
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Error in SignUpDriver:', error);
+    
+    // Handle specific MongoDB errors
+    if (error.code === 11000) {
+      return res.status(409).json({ 
+        success: false, 
+        message: "Driver with this email already exists" 
       });
-      await newDriver.save();
-      return res.status(200).json("Driver Created Successfully!");
     }
-  } catch (e) {
-    res.status(401).json("Please Provide a valid role");
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Validation error",
+        details: error.message 
+      });
+    }
+    
+    return res.status(500).json({ 
+      success: false, 
+      message: "Internal server error",
+      error: error.message 
+    });
   }
 };
 
