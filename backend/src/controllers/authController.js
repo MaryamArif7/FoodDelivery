@@ -150,7 +150,9 @@ export const SignUpResturant = async (req, res) => {
   }
 };
 export const SignUpDriver = async (req, res) => {
-  const { name, email, password, role, phone, address, vehicleType } = req.body;
+  console.log(req.body);
+  const { name, email, phone, password, role } = req.body;
+
   try {
     if (!name) {
       return res.status(404).json("Please provide name");
@@ -160,7 +162,7 @@ export const SignUpDriver = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Email and password is required" });
     }
-    const hashedPassword = await bycrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     if (role === "driver") {
       const newDriver = new Driver({
         name,
@@ -168,8 +170,6 @@ export const SignUpDriver = async (req, res) => {
         password: hashedPassword,
         role,
         phone,
-        address,
-        vehicleType,
       });
       await newDriver.save();
       return res.status(200).json("Driver Created Successfully!");

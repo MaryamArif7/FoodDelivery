@@ -1,4 +1,4 @@
-import stripe from "../config/stripe.js";
+import {stripe} from "../config/stripe.js";
 import payment from "../models/payment.js";
 
 export const createPaymentIntent = async (req, res) => {

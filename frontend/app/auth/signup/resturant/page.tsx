@@ -14,7 +14,7 @@ export default function Register() {
       const response = await axios.post(
         "http://localhost:5000/api/signup/resturant",
         formData
-        // Remove the headers - let axios/browser set Content-Type automatically
+        
       );
     } catch (error) {
       console.error("Error signing up:", error);

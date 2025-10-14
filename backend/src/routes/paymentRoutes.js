@@ -1,12 +1,10 @@
 import express from 'express';
 const router = express.Router();
-const {
-  createPaymentIntent,
+import {  createPaymentIntent,
   handleWebhook,
   getPaymentStatus,
   getUserPayments,
-  createRefund,
-} = require('../controllers/paymentController');
+  createRefund} from "../controllers/paymentController.js";
 router.post('/webhook', express.raw({ type: 'application/json' }), handleWebhook);
 router.post('/create-payment-intent', createPaymentIntent);
 router.get('/status/:paymentId', getPaymentStatus);

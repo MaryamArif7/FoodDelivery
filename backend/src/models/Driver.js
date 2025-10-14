@@ -31,15 +31,15 @@ const driverSchema = new mongoose.Schema({
       {
         street: {
           type: String,
-          required: true,
+          
         },
         city: {
           type: String,
-          required: true,
+         
         },
       },
     ],
-  vehicleType: { type: String, required: true },
+  vehicleType: { type: String,  },
   status: { type: String, enum: ["available", "busy", "offline"], default: "available" },
   currentLocation: {
     type: { type: String, enum: ["Point"], default: "Point" },

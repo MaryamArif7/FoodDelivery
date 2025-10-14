@@ -7,11 +7,8 @@ import {
 import express from "express";
 import { createUploadMiddleware } from "../middlewares/upload.js";
 
-console.log('🚀 Auth routes file loading...');
 
 const router = express.Router();
-
-// Add debugging middleware to ALL routes
 router.use((req, res, next) => {
   console.log(`\n📍 Auth Route Hit:`);
   console.log(`   Path: ${req.path}`);
@@ -21,7 +18,7 @@ router.use((req, res, next) => {
   next();
 });
 
-// Create upload middleware - this will now have access to env variables
+
 console.log('🔧 Creating upload middleware...');
 let upload;
 try {
@@ -78,10 +75,20 @@ router.post(
   SignUpResturant
 );
 
-router.post("/signup/driver", (req, res, next) => {
-  console.log('✅ Driver signup route handler called');
-  next();
-}, SignUpDriver);
+router.post(
+  "/signup/driver",
+  (req, res, next) => {
+    console.log('✅ Driver signup route handler called');
+    console.log('   Content-Type:', req.get('content-type'));
+    next();
+  },
+  upload.none(), // ✅ Add this to parse multipart/form-data without files
+  (req, res, next) => {
+    console.log('   Body after parsing:', req.body);
+    next();
+  },
+  SignUpDriver
+)
 
 // Add a test route within auth routes
 router.get("/test", (req, res) => {

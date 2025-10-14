@@ -19,7 +19,21 @@ export default function Drivers() {
     };
     fetchDrivers();
   }, []);
+const handleAddDriver= async (e: React.FormEvent<HTMLFormElement>)=>{
+    e.preventDefault();
+  try{
+const formData = new FormData(e.currentTarget);
+      formData.append("role", "driver");
 
+      const response = await axios.post(
+        "http://localhost:5000/api/signup/driver",
+        formData
+      );
+  }
+  catch(error){
+    console.error("Error signing up:", error);
+  }
+}
   return (
     <Sidebar>
       <div className="flex justify-between mr-8">
@@ -100,15 +114,15 @@ export default function Drivers() {
                   <X size={24} />
                 </button>
               </div>
-              <div className="space-y-4">
+              <form className="space-y-4" onSubmit={handleAddDriver}>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Name
                   </label>
                   <input
                     type="text"
-                    // value={formData.name}
-                    // onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    name="name"
+                    id="name"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                     placeholder="Enter driver name"
                   />
@@ -119,10 +133,22 @@ export default function Drivers() {
                   </label>
                   <input
                     type="email"
-                    // value={formData.email}
-                    // onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                   name="email"
+                   id="email"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                     placeholder="Enter driver email"
+                  />
+                </div>
+                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone
+                  </label>
+                  <input
+                    type="number"
+                   name="phone"
+                   id="phone"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                    placeholder="Enter driver phone"
                   />
                 </div>
                 <div>
@@ -131,8 +157,8 @@ export default function Drivers() {
                   </label>
                   <input
                     type="password"
-                    // value={formData.password}
-                    // onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    name="password"
+                    id="password"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                     placeholder="Enter password"
                   />
@@ -145,13 +171,13 @@ export default function Drivers() {
                     Cancel
                   </button>
                   <button
-                    // onClick={handleAddDriver}
+                   type="submit"
                     className="flex-1 px-4 py-2 bg-1 text-gray-900 rounded-lg hover:bg-yellow-600 transition-colors font-semibold"
                   >
                     Add Driver
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         )}
