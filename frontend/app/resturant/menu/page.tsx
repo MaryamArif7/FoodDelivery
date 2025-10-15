@@ -76,10 +76,10 @@ export default function Menu() {
   };
   const onMenuEdit = () => {};
   const onMenuDelete = () => {};
-
+console.log(user?.menu?.length);
   return (
     <Sidebar>
-      {user?.menu.length > 1 ? (
+      {user?.menu?.length < 1 ? (
         <div className="max-w-6xl mx-auto p-6">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">
             Add Your Menu Items
@@ -292,7 +292,7 @@ export default function Menu() {
             Manage your Menu Here
           </h2>
           <div className="flex justify-between gap-5 ">
-            {user.menu.map((item, index) => (
+            {user.menu?.map((item, index) => (
               <MenuCard
                 key={item._id}
                 item={item}

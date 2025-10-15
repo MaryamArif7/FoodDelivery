@@ -283,20 +283,24 @@ class AuthService {
       const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
         expiresIn: "7d",
       });
-  const userMenu = await mongoose
-    .model(model)
-    .findById(user._id)
-    .populate("menu");
+   const userResponse = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: role,
+      };
+
+      if (role === "restaurant") {
+        const userMenu = await mongoose
+          .model(model)
+          .findById(user._id)
+          .populate("menu");
+        userResponse.menu = userMenu.menu;
+      }
 
       return {
         token,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: role,
-          menu:userMenu.menu,
-        },
+        user: userResponse,
       };
     } catch (e) {
       throw e;
