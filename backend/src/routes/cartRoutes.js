@@ -3,6 +3,6 @@ import { addToCart,updateCartItemQuantity,deleteCartItems,fetchCartItems } from 
 const router=express.Router();
 router.post('/add',addToCart);
 router.put('/update',updateCartItemQuantity);
-router.delete('/delete',deleteCartItems);
+router.delete('/delete/:id/:menuId', deleteCartItems);
 router.get('/get/:id',fetchCartItems);
 export default router;

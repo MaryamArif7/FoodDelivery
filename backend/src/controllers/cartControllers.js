@@ -145,7 +145,8 @@ export const updateCartItemQuantity = async (req, res) => {
 };
 export const deleteCartItems = async (req, res) => {
   try {
-    const { id, menuId,restaurantId } = req.body;
+       const { id, menuId } = req.params;
+    console.log(req.body);
     if (!id || !menuId) {
       res.status(400).json({
         message: "All fields are Required",
@@ -159,18 +160,18 @@ export const deleteCartItems = async (req, res) => {
         success: false,
       });
     }
-    if (menuItem.restaurantId.toString() !== restaurantId) {
-      return res.status(400).json({
-        message: "Menu item does not belong to this restaurant",
-        success: false,
-      });
-    }
+    // if (menuItem.restaurantId.toString() !== restaurantId) {
+    //   return res.status(400).json({
+    //     message: "Menu item does not belong to this restaurant",
+    //     success: false,
+    //   });
+    // }
     let cart = await Cart.findOne({ userId: id });
 
     cart.items = cart.items.filter((item) => item.menuId.toString() !== menuId);
 
     await cart.save();
-    await cart.populate("items.menuId items.restaurantId");
+   
 
     return res.status(200).json({
       message: "Item removed from cart",
