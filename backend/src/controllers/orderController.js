@@ -1,4 +1,4 @@
-import Order from "../models/order.model.js";
+import Order from "../models/Order.js";
 
 // Fetch all available orders (prepared and not yet assigned)
 export const getAvailableOrders = async (req, res) => {

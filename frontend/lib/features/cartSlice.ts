@@ -6,12 +6,14 @@ const initialState = {
 };
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
-  async ({ id,  resturantId, menuId, quantity }) => {
-    const response = await axios.post("http://localhost:5000/api/menu/cart/add", {
+  async ({ id,  restaurantId, menuId, quantity,price }) => {
+    console.log("Sending request with:", { id, restaurantId, menuId, quantity,price });
+    const response = await axios.post("http://localhost:5000/api/cart/add", {
       id,
-      resturantId,
+      restaurantId,
       menuId,
       quantity,
+      price
     }).catch((error) => {
       console.error("Error adding to cart:", error.response || error.message);
     });
@@ -25,16 +27,18 @@ export const fetchCartItems = createAsyncThunk(
     console.log("Sending request with userId:", id);
     const response = await axios.get(`
             
-             http://localhost:5000/api/menu/cart/get/${id}
+             http://localhost:5000/api/cart/get/${id}
             `);
-    return response.data;
+    console.log("Fetched cart items:", response.data.items);
+    return response.data.items;
+   
   }
 );
 export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartQuantity",
   async ({ id, menuId, quantity }) => {
     const response = await axios.put(
-      "http://localhost:5000/api/menu/cart/update-cart",
+      "http://localhost:5000/api/cart/update-cart",
       {
         id,
         menuId,
@@ -48,9 +52,9 @@ export const updateCartQuantity = createAsyncThunk(
 export const deleteCartItems = createAsyncThunk(
   "cart/deleteCartItems",
   async ({ id, menuId }) => {
-    console.log("from delete stoore handle", id, menuId);
+    console.log("from delete store handle", id, menuId);
     const response = await axios.post(
-      `http:localhost:5000/api/menu/cart/${id}/${menuId}`
+      `http:localhost:5000/api/cart/${id}/${menuId}`
     );
     return response.data;
   }
@@ -83,10 +87,10 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.cartItems = action.payload.data;
+        state.cartItems = action.payload;
       })
       .addCase(fetchCartItems.rejected, (state) => {
-        state.isLoading = true;
+        state.isLoading = false;
         state.cartItems = [];
       })
       .addCase(updateCartQuantity.pending, (state) => {

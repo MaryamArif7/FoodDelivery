@@ -5,18 +5,23 @@ import toast, { Toaster } from 'react-hot-toast';
 export const ResturantDetails = ({ resturant }) => {
   const dispatch=useDispatch();
  const { user } = useSelector((state) => state.auth);
-
- const handleAddToCart = (menuId) => {
+console.log(user);
+ const handleAddToCart = (menu) => {
+  console.log(user);
+  console.log(resturant);
+    console.log("price test", { price: resturant?.menu.price });
    dispatch(
      addToCart({
-       id: user?._id,
-       resturantId: resturant?._id,
-       menuId: menuId,
+       id: user?.id,
+       restaurantId: resturant?._id,
+       menuId: menu._id,
        quantity: 1,
+       price:menu.price
+       
      })
    ).then((data) => {
      if (data?.payload?.success) {
-       dispatch(fetchCartItems(user?._id));
+       dispatch(fetchCartItems(user?.id));
        toast.success("Menu Added to the cart");
      }
      else {
@@ -42,6 +47,7 @@ export const ResturantDetails = ({ resturant }) => {
           {resturant.menu.map((menu) => (
             <Card
               key={menu._id}
+            
               name={menu.name}
               description={menu.description}
               price={menu.price}

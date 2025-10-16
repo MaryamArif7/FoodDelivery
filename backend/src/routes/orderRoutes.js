@@ -3,18 +3,18 @@ import {
   getAvailableOrders,
   acceptOrder,
   updateDeliveryStatus,
-} from "../controllers/driver.controller.js";
-import { verifyDriver } from "../middleware/auth.js";
+} from "../controllers/orderController.js";
+// import { verifyDriver } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // Fetch available orders (prepared & unassigned)
-router.get("/orders", verifyDriver, getAvailableOrders);
+router.get("/orders", getAvailableOrders);
 
 // Accept an order
-router.put("/orders/:orderId/accept", verifyDriver, acceptOrder);
+router.put("/orders/:orderId/accept", acceptOrder);
 
 // Update delivery status (on_the_way → delivered)
-router.put("/orders/:orderId/status", verifyDriver, updateDeliveryStatus);
+router.put("/orders/:orderId/status", updateDeliveryStatus);
 
 export default router;

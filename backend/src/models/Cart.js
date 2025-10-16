@@ -22,6 +22,11 @@ const  cartSchema=new mongoose.Schema({
           required: true,
           min: 1,
         },
+        price: {
+          type: Number,
+          required: true,
+       
+        },
    }],
 } ,{timestamps:true});
 export default mongoose.model("Cart",cartSchema);

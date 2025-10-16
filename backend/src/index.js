@@ -17,7 +17,7 @@ import cartRoutes from "./routes/cartRoutes.js";
 import paymentRoutes  from "./routes/paymentRoutes.js";
 import cors from 'cors';
 import { Server } from "socket.io";
-import { setupOrderRoutes } from "./routes/orderRoutes.js";
+import orderRoutes  from "./routes/orderRoutes.js";
 import http from "http";
 mongoose.connect('mongodb+srv://maryam7:maryam1306@maryam.xoazkgz.mongodb.net/?retryWrites=true&w=majority&appName=maryam',{
     useNewUrlParser:true,
@@ -39,14 +39,13 @@ app.use("/api", resturantRoutes);
 app.use("/api", adminRoutes);
 app.use("/api/cart",cartRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/orders", setupOrderRoutes(io));
+app.use("/api/orders", orderRoutes);
 app.set("io", io);
 
-// Socket connection
 io.on("connection", (socket) => {
   console.log("A client connected:", socket.id);
 
-  // Optional: identify type (restaurant/driver)
+
   socket.on("identify", (role) => {
     console.log(`${role} connected: ${socket.id}`);
     socket.join(role);

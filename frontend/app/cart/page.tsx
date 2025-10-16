@@ -1,22 +1,25 @@
+"use client"
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link'
-import { useRouter } from 'next/router'
- 
+import { useRouter } from 'next/navigation';
+ import { Nav } from "./../../components/common/nav";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { updateCartQuantity, deleteCartItems, fetchCartItems } from '@/lib/features/cartSlice';
 
 export default function Cart() {
   const dispatch = useDispatch();
-  const { cartItems, loading } = useSelector((state) => state.cart);
+  const { cartItems, isLoading } = useSelector((state) => state.cart);
+  console.log("Cart Items:",cartItems);
   const { user } = useSelector((state) => state.auth);
     const router = useRouter()
   const [openModal, setOpenModal] = useState(null);
 
   useEffect(() => {
-    if (user?.id || user?._id) {
-      dispatch(fetchCartItems(user?._id || user?.__id));
+    console.log(user);
+    if (user?.id ) {
+      dispatch(fetchCartItems(user?.id ));
     }
   }, [dispatch, user]);
 
@@ -62,13 +65,13 @@ export default function Cart() {
   };
 
 
-  if (!cartItems?.items?.length && !loading) {
-    router.push("/")
-    return null;
-  }
 
   return (
+   
+
+    
     <div className="min-h-screen bg-gray-50 py-8">
+       <Nav />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
        
         <div className="mb-8">
@@ -80,13 +83,13 @@ export default function Cart() {
          
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm">
-              {loading ? (
+              {isLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
                 </div>
               ) : (
                 <ul className="divide-y divide-gray-200">
-                  {cartItems?.items?.map((item) => (
+                  {cartItems?.map((item) => (
                     <li key={item.menuId._id} className="p-6 hover:bg-gray-50 transition">
                       <div className="flex gap-4">
                       
@@ -162,7 +165,7 @@ export default function Cart() {
 
         
             <Link
-              to="/"
+              href="/"
               className="mt-4 inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -199,7 +202,7 @@ export default function Cart() {
               </div>
 
               <Link
-                to="/checkout"
+                href="/checkout"
                 className="w-full block text-center bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition mb-3"
               >
                 Proceed to Checkout
@@ -240,5 +243,6 @@ export default function Cart() {
       )}
     </div>
     </div>
+ 
   );
 }

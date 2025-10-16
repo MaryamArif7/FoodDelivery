@@ -50,7 +50,7 @@ export const Card = ({ name, description, price, image,menu,handleAddToCart }) =
             </span>
           </button>
           
-          <button onClick={()=>handleAddToCart(menu?._id)} className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-2.5 px-4 rounded-full transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
+          <button onClick={()=>handleAddToCart(menu)} className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-2.5 px-4 rounded-full transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
             <span className="flex items-center justify-center gap-2">
               <span>Add To Cart</span>
               {isHovered && (
