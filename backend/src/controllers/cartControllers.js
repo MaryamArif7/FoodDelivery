@@ -3,11 +3,11 @@ import Cart from "../models/Cart.js"
 import mongoose from "mongoose";
 export const addToCart = async (req, res) => {
   try {
-    const { id, restaurantId, menuId, quantity,price } = req.body;
+    const { id, restaurantId, menuId, quantity,price,image } = req.body;
     console.log(req.body);
-    
- 
-    if (!id || !menuId || !quantity || !restaurantId || !price) {
+
+
+    if (!id || !menuId || !quantity || !restaurantId || !price || !image) {
       return res.status(400).json({
         message: "All fields are required",
         success: false,
@@ -52,19 +52,19 @@ export const addToCart = async (req, res) => {
         cart.items[itemIndex].quantity += quantity;
       } else {
        
-        cart.items.push({ restaurantId, menuId, quantity,price });
+        cart.items.push({ restaurantId, menuId, quantity,price,image });
       }
     } else {
      
       cart = new Cart({
         userId: id,
-        items: [{ restaurantId, menuId, quantity, price }]
+        items: [{ restaurantId, menuId, quantity, price,image }]
       });
     }
     
 
     await cart.save();
-    await cart.populate('items.menuId items.restaurantId');
+  
     
     return res.status(200).json({
       message: "Item added to cart successfully",
@@ -145,8 +145,8 @@ export const updateCartItemQuantity = async (req, res) => {
 };
 export const deleteCartItems = async (req, res) => {
   try {
-    const { id, menuId, quantity, restaurantId } = req.body;
-    if (!id || !menuId || !quantity) {
+    const { id, menuId,restaurantId } = req.body;
+    if (!id || !menuId) {
       res.status(400).json({
         message: "All fields are Required",
         success: false,
@@ -178,7 +178,7 @@ export const deleteCartItems = async (req, res) => {
       cart,
     });
   } catch (e) {
-    console.error("Error in addToCart:", error);
+    console.error("Error in deleteCart:", e);
     return res.status(500).json({
       message: "Internal server error",
       success: false,
@@ -195,8 +195,10 @@ export const fetchCartItems = async (req, res) => {
         success: false,
       });
     }
-
-    const cart = await Cart.findOne({ userId: id }).lean();
+ const cart = await Cart.findOne({ userId: id })
+   .populate("items.menuId")
+   .populate("items.restaurantId")
+   .lean();
 
     if (!cart) {
       return res.status(404).json({

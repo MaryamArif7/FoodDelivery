@@ -16,7 +16,8 @@ console.log(user);
        restaurantId: resturant?._id,
        menuId: menu._id,
        quantity: 1,
-       price:menu.price
+       price:menu.price,
+       image:menu.imageUrl
        
      })
    ).then((data) => {

@@ -24,21 +24,20 @@ export default function Cart() {
   }, [dispatch, user]);
 
   
-  const totalAmount = cartItems?.items?.reduce(
-    (amount, item) => item.menuId.price * item.quantity + amount,
+  const totalAmount = cartItems?.reduce(
+    (amount, item) => item.price * item.quantity + amount,
     0
   ) || 0;
-  
-  const totalItems = cartItems?.items?.reduce(
-    (total, item) => item.quantity + total, 
-    0
-  ) || 0;
+  console.log(typeof(cartItems));
+  console.log(Array.isArray(cartItems)); 
+  const totalItems = cartItems?.length || 0;
+
 
   const handleQuantityChange = (item, newQuantity) => {
     if (newQuantity < 1) return;
     
     dispatch(updateCartQuantity({
-      userId: user?._id || user?.__id,
+      id: user?.id ,
       menuId: item.menuId._id,
       quantity: newQuantity
     })).then((data) => {
@@ -52,7 +51,7 @@ export default function Cart() {
 
   const handleRemove = (menuId) => {
     dispatch(deleteCartItems({
-      userId: user?.id || user?._id,
+      id: user?.id,
       menuId: menuId
     })).then((data) => {
       if (data?.payload?.success) {
@@ -90,12 +89,12 @@ export default function Cart() {
               ) : (
                 <ul className="divide-y divide-gray-200">
                   {cartItems?.map((item) => (
-                    <li key={item.menuId._id} className="p-6 hover:bg-gray-50 transition">
+                    <li key={item.menuId} className="p-6 hover:bg-gray-50 transition">
                       <div className="flex gap-4">
                       
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200">
                           <img
-                            src={item.menuId.imageUrl || '/placeholder-food.jpg'}
+                            src={item.image || '/placeholder-food.jpg'}
                             alt={item.menuId.name}
                             className="h-full w-full object-cover"
                           />
@@ -107,19 +106,15 @@ export default function Cart() {
                             <div className="flex justify-between">
                               <div>
                                 <h3 className="text-lg font-semibold text-gray-900">
-                                  {item.menuId.name}
+                                  {item.menuId?.name}
                                 </h3>
                                 <p className="text-sm text-gray-600 mt-1">
                                   {item.restaurantId?.name || 'Restaurant'}
                                 </p>
-                                {item.menuId.description && (
-                                  <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                                    {item.menuId.description}
-                                  </p>
-                                )}
+                             
                               </div>
                               <p className="text-lg font-semibold text-gray-900">
-                                ${(item.menuId.price * item.quantity).toFixed(2)}
+                                ${(item.price * item.quantity).toFixed(2)}
                               </p>
                             </div>
                           </div>
@@ -185,18 +180,18 @@ export default function Cart() {
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Delivery Fee</span>
-                  <span className="font-medium">$5.00</span>
+                  <span className="font-medium">$3.00</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Tax (8%)</span>
-                  <span className="font-medium">${(totalAmount * 0.08).toFixed(2)}</span>
+                  <span>Tax (3%)</span>
+                  <span className="font-medium">${(totalAmount * 0.03).toFixed(2)}</span>
                 </div>
                 
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text">
                   <div className="flex justify-between text-lg font-semibold text-gray-900">
                     <span>Total</span>
-                    <span>${(totalAmount + 5 + totalAmount * 0.08).toFixed(2)}</span>
+                    <span>${(totalAmount + 5 + totalAmount * 0.03).toFixed(2)}</span>
                   </div>
                 </div>
               </div>

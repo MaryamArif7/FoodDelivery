@@ -6,14 +6,15 @@ const initialState = {
 };
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
-  async ({ id,  restaurantId, menuId, quantity,price }) => {
+  async ({ id,  restaurantId, menuId, quantity,price,image }) => {
     console.log("Sending request with:", { id, restaurantId, menuId, quantity,price });
     const response = await axios.post("http://localhost:5000/api/cart/add", {
       id,
       restaurantId,
       menuId,
       quantity,
-      price
+      price,
+      image
     }).catch((error) => {
       console.error("Error adding to cart:", error.response || error.message);
     });
@@ -38,7 +39,7 @@ export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartQuantity",
   async ({ id, menuId, quantity }) => {
     const response = await axios.put(
-      "http://localhost:5000/api/cart/update-cart",
+      "http://localhost:5000/api/cart/update",
       {
         id,
         menuId,
@@ -53,8 +54,8 @@ export const deleteCartItems = createAsyncThunk(
   "cart/deleteCartItems",
   async ({ id, menuId }) => {
     console.log("from delete store handle", id, menuId);
-    const response = await axios.post(
-      `http:localhost:5000/api/cart/${id}/${menuId}`
+    const response = await axios.delete(
+      `http://localhost:5000/api/cart/delete`
     );
     return response.data;
   }
