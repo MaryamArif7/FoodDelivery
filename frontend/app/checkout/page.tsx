@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import getStripe from '@/lib/stripe';
-import CheckoutForm from '@/components/CheckoutForm';
-
+import CheckoutForm from '../../components/user/CheckoutForm';
+import { Nav } from '@/components/common/nav';
 export default function CheckoutPage() {
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(true);
@@ -42,7 +42,9 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+
+      <div className="">
+        <Nav />
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading checkout...</p>
@@ -52,7 +54,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <div className="">
+      <Nav />
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
         <h1 className="text-2xl font-bold mb-6 text-gray-900">Complete Your Payment</h1>
         
