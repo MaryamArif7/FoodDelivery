@@ -9,8 +9,7 @@ const orderSchema = new mongoose.Schema({
   items: [{
     menuId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Menu',
-      required: true
+      ref:'Item'
     },
     name: String,
     quantity: {
@@ -70,10 +69,7 @@ const orderSchema = new mongoose.Schema({
     enum: ['pending',  'accepted','confirmed', 'preparing', 'on_the_way', 'delivered', 'cancelled'],
     default: 'pending'
   },
-  orderNumber: {
-    type: String,
-    unique: true
-  },
+
   estimatedDeliveryTime: {
     type: Date
   },
@@ -84,4 +80,4 @@ const orderSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
-export default mongoose.models.Order || mongoose.model("Order", orderSchema);
+export default mongoose.model("Order", orderSchema);

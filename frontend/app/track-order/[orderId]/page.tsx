@@ -3,11 +3,14 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { useSearchParams } from "next/navigation";
-
-export default function TrackOrderPage() {
+import { Nav } from '@/components/common/nav';
+export default function TrackOrderPage({ 
+  params 
+}: { 
+  params: { orderId: string } 
+})  {
   const searchParams = useSearchParams();
-  const orderId = searchParams.get("orderId");
-
+  const { orderId } = params;
   const [status, setStatus] = useState("Loading...");
   const [socketConnected, setSocketConnected] = useState(false);
 
@@ -18,10 +21,10 @@ export default function TrackOrderPage() {
     const fetchStatus = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${orderId}`
+          `http://localhost:5000/api/orders/${orderId}`
         );
         const data = await res.json();
-        setStatus(data?.data?.deliveryStatus || "Pending");
+        setStatus(data?.data?.orderStatus || "Pending");
       } catch (err) {
         console.error("Error fetching order:", err);
         setStatus("Error loading order");
@@ -30,7 +33,7 @@ export default function TrackOrderPage() {
     fetchStatus();
 
     // 2️⃣ Connect to WebSocket
-    const socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000");
+    const socket = io("http://localhost:5000");
 
     socket.on("connect", () => {
       console.log("✅ Connected to WebSocket server");
@@ -61,7 +64,11 @@ export default function TrackOrderPage() {
   }, [orderId]);
 
   return (
+    <div>
+
+   <Nav />
     <div className="min-h-screen flex flex-col items-center justify-center text-center">
+       
       <h1 className="text-3xl font-bold mb-4">Order Tracking</h1>
       <p className="text-gray-600 mb-2">
         Order ID: <span className="font-mono text-blue-600">{orderId}</span>
@@ -75,5 +82,6 @@ export default function TrackOrderPage() {
         </p>
       )}
     </div>
+     </div>
   );
 }

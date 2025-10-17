@@ -1,5 +1,34 @@
 import Order from "../models/Order.js";
 import Cart from "../models/Cart.js";
+export const getOrderById = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId)
+      .populate('userId', 'name email phone')
+      .populate('items.menuId')
+      .populate('items.restaurantId');
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: order
+    });
+  } catch (error) {
+    console.error('Get order error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch order',
+      
+    });
+  }
+};
 // Fetch all available orders (prepared and not yet assigned)
 export const getAvailableOrders = async (req, res) => {
   try {
@@ -125,7 +154,7 @@ export const createOrder = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to create order',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+     
     });
   }
 };
@@ -182,35 +211,7 @@ export const updatePaymentStatus = async (req, res) => {
 };
 
 // Get order by ID
-export const getOrderById = async (req, res) => {
-  try {
-    const { orderId } = req.params;
 
-    const order = await Order.findById(orderId)
-      .populate('userId', 'name email phone')
-      .populate('items.menuId')
-      .populate('items.restaurantId');
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Order not found'
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: order
-    });
-  } catch (error) {
-    console.error('Get order error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch order',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-};
 
 // Get user's orders
 export const getUserOrders = async (req, res) => {

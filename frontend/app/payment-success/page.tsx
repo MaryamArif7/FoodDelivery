@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { fetchCartItems } from '@/lib/features/cartSlice';
-
+import { Nav } from '@/components/common/nav';
 export default function PaymentSuccess() {
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
@@ -74,18 +74,27 @@ export default function PaymentSuccess() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div>
+          <Nav />
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto"></div>
           <p className="mt-4 text-lg text-gray-600">Confirming your payment...</p>
           <p className="mt-2 text-sm text-gray-500">Please wait, do not close this page</p>
         </div>
       </div>
+      </div>
+
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
+    <div>
+ <Nav />
+  
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+       
       <div className="max-w-lg w-full">
         {status === 'success' ? (
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
@@ -132,11 +141,11 @@ export default function PaymentSuccess() {
             {/* Secondary Actions */}
             <div className="space-y-2">
               <Link
-                href="/orders"
+                href={`/track-order/${orderId}`}
                 className="block w-full border-2 border-indigo-600 text-indigo-600 py-3 rounded-xl
                          font-semibold hover:bg-indigo-50 transition-colors duration-200"
               >
-                My Orders
+                Track your order
               </Link>
               
               <Link
@@ -205,5 +214,6 @@ export default function PaymentSuccess() {
         )}
       </div>
     </div>
+      </div>
   );
 }
