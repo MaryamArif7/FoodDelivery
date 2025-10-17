@@ -15,6 +15,21 @@ export default function Cart() {
   const router = useRouter();
   const [openModal, setOpenModal] = useState(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  
+  // Address form state
+  const [address, setAddress] = useState({
+    fullName: user?.name || '',
+    phone: user?.phone || '',
+    email: user?.email || '',
+    street: '',
+    apartment: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: 'US',
+    deliveryInstructions: ''
+  });
 
   useEffect(() => {
     if (user?.id) {
@@ -22,7 +37,6 @@ export default function Cart() {
     }
   }, [dispatch, user]);
 
-  
   const totalAmount = cartItems?.reduce(
     (amount, item) => item.price * item.quantity + amount,
     0
@@ -32,7 +46,6 @@ export default function Cart() {
   const taxRate = 0.03;
   const taxAmount = totalAmount * taxRate;
   const finalTotal = totalAmount + deliveryFee + taxAmount;
-  
   const totalItems = cartItems?.length || 0;
 
   const handleQuantityChange = (item, newQuantity) => {
@@ -65,7 +78,46 @@ export default function Cart() {
     });
   };
 
-  // Handle checkout - create payment intent
+  const handleAddressChange = (e) => {
+    setAddress({
+      ...address,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const validateAddress = () => {
+    if (!address.fullName.trim()) {
+      toast.error('Please enter your full name');
+      return false;
+    }
+    if (!address.phone.trim()) {
+      toast.error('Please enter your phone number');
+      return false;
+    }
+    if (!address.email.trim()) {
+      toast.error('Please enter your email');
+      return false;
+    }
+    if (!address.street.trim()) {
+      toast.error('Please enter your street address');
+      return false;
+    }
+    if (!address.city.trim()) {
+      toast.error('Please enter your city');
+      return false;
+    }
+    if (!address.state.trim()) {
+      toast.error('Please enter your state');
+      return false;
+    }
+    if (!address.zipCode.trim()) {
+      toast.error('Please enter your zip code');
+      return false;
+    }
+    return true;
+  };
+
+  // Handle checkout with order creation
   const handleCheckout = async () => {
     if (!user?.id) {
       toast.error("Please login to continue");
@@ -78,54 +130,95 @@ export default function Cart() {
       return;
     }
 
+    // Show address modal first
+    setShowAddressModal(true);
+  };
+
+  const handleProceedToPayment = async () => {
+    if (!validateAddress()) return;
+
     setCheckoutLoading(true);
 
     try {
-      // Prepare product details for backend
-      const productDetails = {
+      // Step 1: Create order with status "pending"
+      const orderData = {
+        userId: user?.id,
         items: cartItems?.map(item => ({
+          menuId: item.menuId._id,
           name: item.menuId?.name,
           quantity: item.quantity,
           price: item.price,
-          restaurant: item.restaurantId?.name
+          restaurantId: item.restaurantId?._id,
+          restaurantName: item.restaurantId?.name,
+          image: item.image
         })),
+        deliveryAddress: address,
         subtotal: totalAmount,
         deliveryFee: deliveryFee,
         tax: taxAmount,
-        total: finalTotal
+        totalAmount: finalTotal,
+        paymentStatus: 'pending',
+        orderStatus: 'pending'
       };
 
-      // Call your backend API to create payment intent
-      const response = await fetch('http://localhost:5000/api/payment/create-payment-intent', {
+      // Create order in your database
+      const orderResponse = await fetch('http://localhost:5000/api/orders/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      const orderResult = await orderResponse.json();
+
+      if (!orderResult.success) {
+        toast.error("Failed to create order");
+        setCheckoutLoading(false);
+        return;
+      }
+
+      const orderId = orderResult.data._id || orderResult.data.orderId;
+
+      // Step 2: Create payment intent
+      const paymentResponse = await fetch('http://localhost:5000/api/payment/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: finalTotal, // Total amount in dollars
+          amount: finalTotal,
           currency: 'usd',
           userId: user?.id,
-          productDetails: productDetails,
-          customerEmail: user?.email || null
+          orderId: orderId, // Link payment to order
+          productDetails: {
+            orderId: orderId,
+            items: cartItems?.length,
+            deliveryAddress: address
+          },
+          customerEmail: address.email
         }),
       });
 
-      const data = await response.json();
+      const paymentData = await paymentResponse.json();
 
-      if (data.success && data.data.clientSecret) {
-        // Store client secret and payment details in localStorage
-        localStorage.setItem('payment_client_secret', data.data.clientSecret);
+      if (paymentData.success && paymentData.data.clientSecret) {
+        // Store everything needed for checkout
+        localStorage.setItem('payment_client_secret', paymentData.data.clientSecret);
+        localStorage.setItem('order_id', orderId);
+        localStorage.setItem('delivery_address', JSON.stringify(address));
         localStorage.setItem('payment_details', JSON.stringify({
           amount: finalTotal,
-          paymentId: data.data.paymentId,
           items: cartItems?.length,
+          orderId: orderId
         }));
 
         // Navigate to checkout page
+        setShowAddressModal(false);
         router.push('/checkout');
-        toast.success("Redirecting to checkout...");
+        toast.success("Proceeding to payment...");
       } else {
-        toast.error(data.message || "Failed to initialize payment");
+        toast.error(paymentData.message || "Failed to initialize payment");
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -136,7 +229,7 @@ export default function Cart() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 ">
       <Nav />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
@@ -145,7 +238,6 @@ export default function Cart() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm">
               {isLoading ? (
@@ -156,10 +248,7 @@ export default function Cart() {
                 <div className="text-center py-12">
                   <ShoppingBag className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-600 text-lg">Your cart is empty</p>
-                  <Link
-                    href="/"
-                    className="mt-4 inline-block text-indigo-600 hover:text-indigo-700 font-medium"
-                  >
+                  <Link href="/" className="mt-4 inline-block text-indigo-600 hover:text-indigo-700 font-medium">
                     Start Shopping
                   </Link>
                 </div>
@@ -169,54 +258,29 @@ export default function Cart() {
                     <li key={item.menuId} className="p-6 hover:bg-gray-50 transition">
                       <div className="flex gap-4">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200">
-                          <img
-                            src={item.image || '/placeholder-food.jpg'}
-                            alt={item.menuId.name}
-                            className="h-full w-full object-cover"
-                          />
+                          <img src={item.image || '/placeholder-food.jpg'} alt={item.menuId.name} className="h-full w-full object-cover" />
                         </div>
-
                         <div className="flex flex-1 flex-col justify-between">
                           <div>
                             <div className="flex justify-between">
                               <div>
-                                <h3 className="text-lg font-semibold text-gray-900">
-                                  {item.menuId?.name}
-                                </h3>
-                                <p className="text-sm text-gray-600 mt-1">
-                                  {item.restaurantId?.name || 'Restaurant'}
-                                </p>
+                                <h3 className="text-lg font-semibold text-gray-900">{item.menuId?.name}</h3>
+                                <p className="text-sm text-gray-600 mt-1">{item.restaurantId?.name || 'Restaurant'}</p>
                               </div>
-                              <p className="text-lg font-semibold text-gray-900">
-                                ${(item.price * item.quantity).toFixed(2)}
-                              </p>
+                              <p className="text-lg font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
                             </div>
                           </div>
-
                           <div className="flex items-center justify-between mt-4">
                             <div className="flex items-center gap-3 border border-gray-300 rounded-lg">
-                              <button
-                                onClick={() => handleQuantityChange(item, item.quantity - 1)}
-                                className="p-2 hover:bg-gray-100 rounded-l-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled={item.quantity <= 1}
-                              >
+                              <button onClick={() => handleQuantityChange(item, item.quantity - 1)} className="p-2 hover:bg-gray-100 rounded-l-lg transition disabled:opacity-50 disabled:cursor-not-allowed" disabled={item.quantity <= 1}>
                                 <Minus className="h-4 w-4 text-gray-600" />
                               </button>
-                              <span className="px-4 font-medium text-gray-900">
-                                {item.quantity}
-                              </span>
-                              <button
-                                onClick={() => handleQuantityChange(item, item.quantity + 1)}
-                                className="p-2 hover:bg-gray-100 rounded-r-lg transition"
-                              >
+                              <span className="px-4 font-medium text-gray-900">{item.quantity}</span>
+                              <button onClick={() => handleQuantityChange(item, item.quantity + 1)} className="p-2 hover:bg-gray-100 rounded-r-lg transition">
                                 <Plus className="h-4 w-4 text-gray-600" />
                               </button>
                             </div>
-
-                            <button
-                              onClick={() => setOpenModal(item.menuId._id)}
-                              className="flex items-center gap-2 text-red-600 hover:text-red-700 font-medium transition"
-                            >
+                            <button onClick={() => setOpenModal(item.menuId._id)} className="flex items-center gap-2 text-red-600 hover:text-red-700 font-medium transition">
                               <Trash2 className="h-4 w-4" />
                               Remove
                             </button>
@@ -228,21 +292,15 @@ export default function Cart() {
                 </ul>
               )}
             </div>
-
-            <Link
-              href="/"
-              className="mt-4 inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium"
-            >
+            <Link href="/" className="mt-4 inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium">
               <ArrowLeft className="h-4 w-4" />
               Continue Shopping
             </Link>
           </div>
 
-          {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-8">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
-              
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal ({totalItems} items)</span>
@@ -256,7 +314,6 @@ export default function Cart() {
                   <span>Tax (3%)</span>
                   <span className="font-medium">${taxAmount.toFixed(2)}</span>
                 </div>
-                
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text-lg font-semibold text-gray-900">
                     <span>Total</span>
@@ -264,12 +321,7 @@ export default function Cart() {
                   </div>
                 </div>
               </div>
-
-              <button
-                onClick={handleCheckout}
-                disabled={checkoutLoading || cartItems?.length === 0}
-                className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+              <button onClick={handleCheckout} disabled={checkoutLoading || cartItems?.length === 0} className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
                 {checkoutLoading ? (
                   <span className="flex items-center justify-center gap-2">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -279,34 +331,82 @@ export default function Cart() {
                   'Proceed to Checkout'
                 )}
               </button>
-
-              <p className="text-xs text-gray-500 text-center mt-3">
-                Secure payment powered by Stripe
-              </p>
+              <p className="text-xs text-gray-500 text-center mt-3">Secure payment powered by Stripe</p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Address Modal */}
+      {showAddressModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-2xl w-full p-6 my-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Delivery Address</h3>
+            <form className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                  <input type="text" name="fullName" value={address.fullName} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="John Doe" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                  <input type="tel" name="phone" value={address.phone} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="+1 (555) 123-4567" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                <input type="email" name="email" value={address.email} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="john@example.com" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Street Address *</label>
+                <input type="text" name="street" value={address.street} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="123 Main Street" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Apartment, Suite (Optional)</label>
+                <input type="text" name="apartment" value={address.apartment} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Apt 4B" />
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
+                  <input type="text" name="city" value={address.city} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="New York" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
+                  <input type="text" name="state" value={address.state} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="NY" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Zip Code *</label>
+                  <input type="text" name="zipCode" value={address.zipCode} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="10001" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Instructions (Optional)</label>
+                <textarea name="deliveryInstructions" value={address.deliveryInstructions} onChange={handleAddressChange} rows="2" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Leave at door, ring bell, etc."></textarea>
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button type="button" onClick={() => setShowAddressModal(false)} className="flex-1 px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition">
+                  Cancel
+                </button>
+                <button type="button" onClick={handleProceedToPayment} disabled={checkoutLoading} className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 transition">
+                  {checkoutLoading ? 'Processing...' : 'Continue to Payment'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {openModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Remove Item</h3>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to remove this item from your cart?
-            </p>
+            <p className="text-gray-600 mb-6">Are you sure you want to remove this item from your cart?</p>
             <div className="flex gap-3">
-              <button
-                onClick={() => setOpenModal(null)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"
-              >
+              <button onClick={() => setOpenModal(null)} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition">
                 Cancel
               </button>
-              <button
-                onClick={() => handleRemove(openModal)}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition"
-              >
+              <button onClick={() => handleRemove(openModal)} className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition">
                 Remove
               </button>
             </div>

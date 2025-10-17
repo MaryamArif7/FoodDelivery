@@ -1,25 +1,87 @@
-// models/Order.js
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const orderSchema = new mongoose.Schema(
-  {
-    userId: { type: String, required: true },
-    paymentIntentId: { type: String, required: true },
-    restaurantId: { type: String, default: "default_restaurant" },
-    shippingDetails: {
-      name: String,
-      email: String,
-      address: {
-        street: String,
-        city: String,
-        state: String,
-        zipCode: String,
-        country: String,
-      },
-    },
-    status: { type: String, enum: ["pending", "accepted", "prepared", "on_the_way", "delivered"], default: "pending" },
+const orderSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
-  { timestamps: true }
-);
-
+  items: [{
+    menuId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Menu',
+      required: true
+    },
+    name: String,
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1
+    },
+    price: {
+      type: Number,
+      required: true
+    },
+    restaurantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Restaurant'
+    },
+    restaurantName: String,
+    image: String
+  }],
+  deliveryAddress: {
+    fullName: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String, required: true },
+    street: { type: String, required: true },
+    apartment: String,
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    zipCode: { type: String, required: true },
+    country: { type: String, default: 'US' },
+    deliveryInstructions: String
+  },
+  subtotal: {
+    type: Number,
+    required: true
+  },
+  deliveryFee: {
+    type: Number,
+    default: 0
+  },
+  tax: {
+    type: Number,
+    default: 0
+  },
+  totalAmount: {
+    type: Number,
+    required: true
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['pending', 'paid', 'failed', 'refunded'],
+    default: 'pending'
+  },
+  paymentIntentId: {
+    type: String
+  },
+  orderStatus: {
+    type: String,
+    enum: ['pending',  'accepted','confirmed', 'preparing', 'on_the_way', 'delivered', 'cancelled'],
+    default: 'pending'
+  },
+  orderNumber: {
+    type: String,
+    unique: true
+  },
+  estimatedDeliveryTime: {
+    type: Date
+  },
+  actualDeliveryTime: {
+    type: Date
+  },
+  cancelReason: String
+}, {
+  timestamps: true
+});
 export default mongoose.models.Order || mongoose.model("Order", orderSchema);
