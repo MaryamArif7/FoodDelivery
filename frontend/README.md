@@ -7,5 +7,8 @@
   role: 'user'
 }
 //resturant :
-maryamarif1306@gmail.com
+parkjimin@gmail.com
 maryam1306
+//driver:
+driver1@gmail.com
+driver123

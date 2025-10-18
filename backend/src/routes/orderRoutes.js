@@ -8,7 +8,9 @@ import {
   getOrderById,
   getUserOrders,
   updateOrderStatus,
-  cancelOrder
+  cancelOrder,
+  status,
+  getRestaurantOrders
 } from "../controllers/orderController.js";
 // import { verifyDriver } from "../middleware/auth.js";
 
@@ -24,13 +26,10 @@ router.put("/orders/:orderId/accept", acceptOrder);
 router.put("/orders/:orderId/status", updateDeliveryStatus);
 // Create order
 router.post('/create', createOrder);
-
-// Update payment status
 router.post('/update-payment-status', updatePaymentStatus);
-
-// Get order by ID
 router.get('/:orderId', getOrderById);
-
+router.put('/:orderId/status',status);
+router.get('/restaurant/:restaurantId', getRestaurantOrders);
 // Get user's orders
 router.get('/user/:userId', getUserOrders);
 

@@ -31,6 +31,11 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*" },
 });
+const activeConnections = {
+  restaurants: new Map(), 
+  drivers: new Map(),    
+  users: new Map()    
+}
 app.use("/api/payment/webhook", paymentRoutes);
 app.use(express.json());
 app.use(cors());
@@ -46,14 +51,34 @@ io.on("connection", (socket) => {
   console.log("A client connected:", socket.id);
 
 
-  socket.on("identify", (role) => {
-    console.log(`${role} connected: ${socket.id}`);
-    socket.join(role);
+ socket.on('identify', ({ userType, userId }) => {
+    console.log(`${userType} identified:`, userId);
+    
+    if (userType === 'restaurant') {
+      activeConnections.restaurants.set(userId, socket.id);
+      socket.join(`restaurant:${userId}`);
+    } else if (userType === 'driver') {
+      activeConnections.drivers.set(userId, socket.id);
+      socket.join('available-drivers'); 
+    } else if (userType === 'user') {
+      activeConnections.users.set(userId, socket.id);
+      socket.join(`user:${userId}`);
+    }
   });
 
-  socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
+  socket.on('disconnect', () => {
+   
+    activeConnections.restaurants.forEach((socketId, restaurantId) => {
+      if (socketId === socket.id) activeConnections.restaurants.delete(restaurantId);
+    });
+    activeConnections.drivers.forEach((socketId, driverId) => {
+      if (socketId === socket.id) activeConnections.drivers.delete(driverId);
+    });
+    activeConnections.users.forEach((socketId, userId) => {
+      if (socketId === socket.id) activeConnections.users.delete(userId);
+    });
   });
+
 });
 
 
