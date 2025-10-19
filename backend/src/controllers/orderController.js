@@ -136,8 +136,8 @@ export const updatePaymentStatus = async (req, res) => {
       
     });
 
-
-    io.to(`user:${order.userId}`).emit('order:created', {
+ const userId = order.userId.toString();
+    io.to(`user:${userId}`).emit('order:created', {
       success:true,
       order:{
  orderId: order._id,
@@ -177,24 +177,57 @@ console.log("order after update",order);
     }
 
    const io = req.app.get('io');
-   
-    io.to(`user:${order.userId}`).emit('order:status-updated', {
-      
-      success: true,  // ✅ Added
-      order: {        // ✅ Changed structure
-        _id: order._id,
-        orderStatus: order.orderStatus,
-        items: order.items,
-        totalAmount: order.totalAmount,
-        deliveryAddress: order.deliveryAddress
-      },
-      orderId: order._id,
-      orderStatus: order.orderStatus,
-      message: 'Order placed successfully! Waiting for restaurant confirmation.'
-      
-    });
-    console.log('✅ Event emitted: order:updated',);
 
+    // io.to(`user:${order.userId}`).emit('order:status-updated', {
+      
+    //   success: true,  // ✅ Added
+    //   order: {        // ✅ Changed structure
+    //     _id: order._id,
+    //     orderStatus: order.orderStatus,
+    //     items: order.items,
+    //     totalAmount: order.totalAmount,
+    //     deliveryAddress: order.deliveryAddress
+    //   },
+    //   orderId: order._id,
+    //   orderStatus: order.orderStatus,
+    //   message: 'Order placed successfully! Waiting for restaurant confirmation.'
+      
+    // });
+    // console.log('✅ Event emitted: order:updated',);
+const emitData = {
+  success: true,
+  order: {
+    _id: order._id,
+    orderStatus: order.orderStatus,
+    items: order.items,
+    totalAmount: order.totalAmount,
+    deliveryAddress: order.deliveryAddress
+  },
+  orderId: order._id,
+  orderStatus: order.orderStatus,
+  message: 'Order placed successfully! Waiting for restaurant confirmation.'
+};
+const userId = order.userId._id.toString()
+const roomName = `user:${userId}`;
+
+// Log before emitting
+console.log('\n==========================================');
+console.log('🔔 EMITTING EVENT: order:status-updated');
+console.log('📍 TO ROOM:', roomName);
+console.log('📦 DATA:', JSON.stringify(emitData, null, 2));
+console.log('==========================================\n');
+
+// Emit the event
+io.to(roomName).emit('order:status-updated', emitData);
+
+// Log after emitting (optional - check if room exists)
+const io_instance = req.app.get('io');
+const roomSockets = io_instance.sockets.adapter.rooms.get(roomName);
+console.log('✅ Event emitted to room:', roomName);
+console.log('👥 Clients in room:', roomSockets ? roomSockets.size : 0);
+if (roomSockets) {
+  console.log('🔌 Socket IDs:', Array.from(roomSockets));
+}
     if (orderStatus === 'ready') {
       io.to('available-drivers').emit('order:ready-for-pickup', {
         orderId: order._id,
