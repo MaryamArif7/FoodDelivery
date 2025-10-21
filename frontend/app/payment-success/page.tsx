@@ -18,7 +18,7 @@ export default function PaymentSuccess() {
     const redirectStatus = searchParams.get('redirect_status');
 
     if (redirectStatus === 'succeeded' || paymentIntentId) {
-      // Get order ID from localStorage
+     
       const storedOrderId = localStorage.getItem('order_id');
       
       if (storedOrderId) {
@@ -28,7 +28,7 @@ export default function PaymentSuccess() {
         setStatus('success');
       }
       
-      // Clear stored data
+ 
       localStorage.removeItem('payment_client_secret');
       localStorage.removeItem('order_id');
       localStorage.removeItem('delivery_address');
@@ -40,7 +40,7 @@ export default function PaymentSuccess() {
 
   const updateOrderStatus = async (orderId, paymentIntentId) => {
     try {
-      // Update order status to "paid" and "confirmed"
+    
       const response = await fetch(`http://localhost:5000/api/orders/update-payment-status`, {
         method: 'POST',
         headers: {
@@ -60,15 +60,14 @@ export default function PaymentSuccess() {
         setStatus('success');
         setOrderDetails(data.data);
         
-        // Optionally: Clear the cart after successful payment
-        // dispatch(clearCart());
+        
       } else {
-        setStatus('success'); // Still show success even if update fails
+        setStatus('success');
         console.error('Failed to update order status');
       }
     } catch (error) {
       console.error('Error updating order:', error);
-      setStatus('success'); // Still show success
+      setStatus('success');
     }
   };
 
@@ -98,7 +97,7 @@ export default function PaymentSuccess() {
       <div className="max-w-lg w-full">
         {status === 'success' ? (
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-            {/* Success Animation */}
+            
             <div className="relative w-24 h-24 mx-auto mb-6">
               <div className="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-75"></div>
               <div className="relative w-24 h-24 bg-green-500 rounded-full flex items-center justify-center">
@@ -108,12 +107,12 @@ export default function PaymentSuccess() {
               </div>
             </div>
 
-            {/* Success Message */}
+            
             <h1 className="text-3xl font-bold text-gray-900 mb-3">Payment Successful!</h1>
             <p className="text-gray-600 mb-2">Thank you for your order</p>
             <p className="text-sm text-gray-500 mb-8">Your payment has been processed successfully</p>
             
-            {/* Order ID */}
+          
             {orderId && (
               <div className="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-5 mb-8">
                 <p className="text-sm text-indigo-600 font-semibold mb-2">Order Number</p>
@@ -122,7 +121,7 @@ export default function PaymentSuccess() {
               </div>
             )}
 
-            {/* Primary Action */}
+         
             <Link
               href={`/orders/${orderId}`}
               className="block w-full bg-indigo-600 text-white py-4 rounded-xl font-bold text-lg
@@ -138,7 +137,6 @@ export default function PaymentSuccess() {
               </div>
             </Link>
 
-            {/* Secondary Actions */}
             <div className="space-y-2">
               <Link
                 href={`/track-order/${orderId}`}
@@ -157,7 +155,7 @@ export default function PaymentSuccess() {
               </Link>
             </div>
 
-            {/* Info Box */}
+           
             <div className="mt-8 pt-6 border-t border-gray-200">
               <div className="flex items-start text-left text-sm">
                 <svg className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,13 +174,13 @@ export default function PaymentSuccess() {
               </div>
             </div>
 
-            {/* Support */}
+            
             <div className="mt-6 pt-6 border-t border-gray-200 text-sm text-gray-500">
               <p>Need help? <Link href="/support" className="text-indigo-600 hover:text-indigo-700 font-medium">Contact Support</Link></p>
             </div>
           </div>
         ) : (
-          /* Error State */
+        
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <svg className="w-12 h-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

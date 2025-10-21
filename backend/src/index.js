@@ -60,7 +60,9 @@ io.on("connection", (socket) => {
     } else if (userType === 'driver') {
       activeConnections.drivers.set(userId, socket.id);
       socket.join('available-drivers'); 
-    } else if (userType === 'user') {
+    }
+   
+     else if (userType === 'user') {
       activeConnections.users.set(userId, socket.id);
       socket.join(`user:${userId}`);
     }
