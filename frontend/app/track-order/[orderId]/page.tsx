@@ -26,7 +26,7 @@ export default function TrackOrderPage({
   useEffect(() => {
     if (!orderId) return;
 
-    // 1️⃣ Fetch current order status initially
+ 
     const fetchStatus = async () => {
       try {
         const res = await fetch(
@@ -50,10 +50,10 @@ export default function TrackOrderPage({
     const socket = socketRef.current;
 
     socket.on("connect", () => {
-      console.log("✅ Connected to WebSocket server");
+      console.log("Connected to WebSocket server");
       setSocketConnected(true);
       
-      // Identify as customer
+
       socket.emit("identify", {
         userType: "user",
         userId: userId
@@ -61,7 +61,7 @@ export default function TrackOrderPage({
     });
 
   socket.on("order:created", (data) => {
-      console.log("📦 Order created:", data);
+      console.log(" Order created:", data);
       
       if (data.success && data.order && data.order.orderId === orderId) {
         setOrder(data.order);
@@ -69,9 +69,8 @@ export default function TrackOrderPage({
       }
     });
 
-    // FIXED: Match your backend structure
     socket.on("order:status-updated", (data) => {
-      console.log("🔄 Status updated:", data);
+      console.log(" Status updated:", data);
       
       if (data.success && data.orderId === orderId) {
         setStatus(data.orderStatus);
@@ -82,7 +81,7 @@ export default function TrackOrderPage({
     });
 
     socket.on("order:driver-assigned", (data) => {
-      console.log("🚗 Driver assigned:", data);
+      console.log(" Driver assigned:", data);
       
       if (data.success && data.orderId === orderId) {
         setOrder(prev => ({ 
@@ -95,12 +94,12 @@ export default function TrackOrderPage({
     });
 
     socket.on("disconnect", () => {
-      console.log("🔌 Disconnected");
+      console.log(" Disconnected");
       setSocketConnected(false);
     });
 
     socket.on("reconnect", () => {
-      console.log("🔄 Reconnected");
+      console.log(" Reconnected");
       setSocketConnected(true);
       socket.emit("identify", {
         userType: "user",
@@ -171,7 +170,7 @@ export default function TrackOrderPage({
   const statusInfo = getStatusInfo(status);
   const StatusIcon = statusInfo.icon;
 
-  // Calculate progress percentage
+  
   const getProgressPercentage = (currentStatus: string) => {
     const statusOrder = ['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'delivered'];
     const currentIndex = statusOrder.indexOf(currentStatus);
@@ -183,7 +182,7 @@ export default function TrackOrderPage({
    <Nav />
      <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-3xl mx-auto">
-          {/* Connection Status */}
+      
           {!socketConnected && (
             <div className="mb-4 bg-orange-50 border border-orange-200 rounded-lg p-3 flex items-center gap-2">
               <div className="animate-pulse w-2 h-2 bg-orange-500 rounded-full"></div>
@@ -191,7 +190,7 @@ export default function TrackOrderPage({
             </div>
           )}
 
-          {/* Header */}
+      
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h1 className="text-2xl font-bold mb-2">Track Your Order</h1>
             <p className="text-gray-600">
@@ -199,7 +198,7 @@ export default function TrackOrderPage({
             </p>
           </div>
 
-          {/* Status Card */}
+       
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className={`flex items-center gap-4 p-4 rounded-lg ${statusInfo.color}`}>
               <StatusIcon className="w-12 h-12" />
@@ -209,7 +208,7 @@ export default function TrackOrderPage({
               </div>
             </div>
 
-            {/* Progress Bar */}
+         
             <div className="mt-6">
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div 
@@ -219,7 +218,7 @@ export default function TrackOrderPage({
               </div>
             </div>
 
-            {/* Status Timeline */}
+         
             <div className="mt-6 space-y-3">
               {['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'delivered'].map((s) => {
                 const info = getStatusInfo(s);
@@ -240,7 +239,7 @@ export default function TrackOrderPage({
           </div>
 
          
-          {/* Order Details */}
+    
           {order && (
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-lg font-bold mb-4">Order Details</h3>

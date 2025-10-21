@@ -18,15 +18,15 @@ export default function Orders() {
   const socketRef = useRef(null);
   const audioRef = useRef(null);
    useEffect(() => {
-    // 1. INITIAL LOAD: Fetch existing orders via REST API
+ 
     fetchOrders();
 
-    // 2. WEBSOCKET: Connect and listen for real-time updates
+   
     socketRef.current = io('http://localhost:5000');
 
     socketRef.current.on('connect', () => {
       console.log('Connected to WebSocket');
-      // Identify as restaurant
+    
       socketRef.current.emit('identify', {
         userType: 'restaurant',
         userId: restaurantId
@@ -34,7 +34,7 @@ export default function Orders() {
     });
  const socket = socketRef.current;
     socket.on('order:new', (data) => {
-      console.log('📦 New order received:', data);
+      console.log('New order received:', data);
       if (data.success && data.order) {
         setOrders(prev => [data.order, ...prev]);
         showNotification(`New order from ${data.order.fullName}!`, 'success');
@@ -44,7 +44,7 @@ export default function Orders() {
 
     
     socket.on('order:picked-up', (data) => {
-      console.log('🚗 Order picked up:', data);
+      console.log(' Order picked up:', data);
       if (data.success) {
         setOrders(prev =>
           prev.map(order =>
@@ -57,7 +57,7 @@ export default function Orders() {
       }
     });
 
-    // Cleanup on unmount
+ 
    return () => {
       if (socketRef.current) {
         socket.off('connect');
@@ -103,7 +103,7 @@ export default function Orders() {
       const data = await response.json();
       
       if (data.success) {
-        // Update local state
+      
         setOrders(prev =>
           prev.map(order =>
             order._id === orderId
