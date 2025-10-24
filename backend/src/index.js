@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
       socket.join(`restaurant:${userId}`);
     } else if (userType === 'driver') {
       activeConnections.drivers.set(userId, socket.id);
-      socket.join('available-drivers'); 
+      socket.join(`driver:${userId}`);
     }
    
      else if (userType === 'user') {
@@ -67,7 +67,12 @@ io.on("connection", (socket) => {
       socket.join(`user:${userId}`);
     }
   });
-
+   socket.on("available-drivers",()=>{
+    io.join("available-drivers")
+   })
+   socket.on("leave-available-drivers",()=>{
+   socket.leave('available-drivers');
+   })
   socket.on('disconnect', () => {
    
     activeConnections.restaurants.forEach((socketId, restaurantId) => {

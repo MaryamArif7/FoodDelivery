@@ -77,7 +77,7 @@ export default function TrackOrderPage({
         if (data.order) {
           setOrder(prev => ({ ...prev, ...data.order }));
         }
-      }
+      } 
     });
 
     socket.on("order:driver-assigned", (data) => {

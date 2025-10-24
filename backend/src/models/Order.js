@@ -6,6 +6,11 @@ const orderSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+    driverId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Driver', 
+    default: null
+  },
   items: [{
     menuId: {
       type: mongoose.Schema.Types.ObjectId,

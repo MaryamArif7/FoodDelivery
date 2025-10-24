@@ -36,7 +36,7 @@ const driverSchema = new mongoose.Schema({
       },
     ],
   vehicleType: { type: String,  },
-  status: { type: String, enum: ["available", "busy", "offline"], default: "available" },
+  status: { type: String, enum: ["available", "busy"], default: "available" },
   currentLocation: {
     type: { type: String, enum: ["Point"], default: "Point" },
     coordinates: { type: [Number], default: [0, 0] },

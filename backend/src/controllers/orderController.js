@@ -1,5 +1,6 @@
 import Order from "../models/Order.js";
 import Cart from "../models/Cart.js";
+import Driver from "../models/Driver.js";
 import mongoose from "mongoose";
 export const getOrderById = async (req, res) => {
   try {
@@ -207,11 +208,11 @@ export const status = async (req, res) => {
       console.log(" Socket IDs:", Array.from(roomSockets));
     }
     if (orderStatus === "ready") {
-      io.to("available-drivers").emit("order:ready-for-pickup", {
+      io.to("available-drivers").emit("new order for pick-up", {
         orderId: order._id,
         restaurantName: order.restaurantId.name,
         deliveryAddress: order.deliveryAddress,
-        earnings: calculateDriverEarnings(order.totalAmount),
+       
       });
     }
 
@@ -228,13 +229,6 @@ export const getRestaurantOrders = async (req, res) => {
   try {
     const { restaurantId } = req.params;
     const { orderStatus } = req.query;
-    console.log(
-      "Fetching orders for restaurant:",
-      restaurantId,
-      "with status:",
-      orderStatus
-    );
-
     if (!restaurantId) {
       return res.status(400).json({
         message: "Restaurant ID is required",
@@ -278,5 +272,145 @@ export const getRestaurantOrders = async (req, res) => {
       success: false,
       error: error.message,
     });
+  }
+};
+//-------driver flow from here-----
+export const driverAvailability=async(req,res)=>{
+  try{
+    const {driverId,status}=req.body;
+   const driver = await Driver.findByIdAndUpdate(
+      driverId,
+      { status },
+      { new: true } 
+    );
+     if (!driver) {
+      return res.status(404).json({
+        message: "Driver not found",
+        success: false
+      });
+    } 
+      if (status === 'available') {
+     
+      io.to(`driver-${driverId}`).emit("available-drivers");
+    } else if (status === 'busy' || status === 'offline') {
+      
+      io.to(`driver-${driverId}`).emit("leave-available-drivers");
+    }
+     res.status(200).json({
+      message: "Driver Status updated Successfully",
+      success: true,
+      status: driver.status,
+      driver
+    });
+
+  }catch(error){
+    res.status(500).json({
+      message:"Internal Server Error",
+      success:false,
+      error:error.message
+    })
+  }
+}
+export const assignDriver = async (req, res) => {
+  try {
+    const { order, orderId, driverId } = req.body;
+    const driver = await Driver.findById(driverId);
+    if (!driver) {
+      return res.status(400).json({
+        message: "Order not found",
+        success: false,
+      });
+    }
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      {
+        driverId: driverId,
+      },
+      { new: true }
+    ).populate("driverId");
+    if (!order) {
+      return res.status(404).json({
+        message: "Order not found",
+        success: false,
+      });
+    }
+    return res.status(200).json({
+      message: "Driver assigned successfully",
+      success: true,
+      order: updatedOrder,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message,
+      success: false,
+    });
+  }
+};
+export const driverStatus = async (req, res) => {
+  try {
+   
+    const {  orderId,orderStatus, restaurantId } = req.body;
+    console.log("order staus from frontend for  updated here", orderStatus);
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { orderStatus, updatedAt: new Date() },
+      { new: true }
+    ).populate("userId");
+    console.log("order after update", order);
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    const io = req.app.get("io");
+    const emitData = {
+      success: true,
+      order: {
+        _id: order._id,
+        orderStatus: order.orderStatus,
+        items: order.items,
+        totalAmount: order.totalAmount,
+        deliveryAddress: order.deliveryAddress,
+      },
+      orderId: order._id,
+      orderStatus: order.orderStatus,
+    
+    };
+    const userId = order.userId._id.toString();
+    const roomName = `user:${userId}`;
+
+    console.log(" EMITTING EVENT: order:status-updated");
+    console.log(" TO ROOM:", roomName);
+    console.log("DATA:", JSON.stringify(emitData, null, 2));
+    io.to(roomName).emit("order:status-updated", emitData);
+
+    const io_instance = req.app.get("io");
+    const roomSockets = io_instance.sockets.adapter.rooms.get(roomName);
+    console.log(" Event emitted to room:", roomName);
+    console.log(" Clients in room:", roomSockets ? roomSockets.size : 0);
+    if (roomSockets) {
+      console.log(" Socket IDs:", Array.from(roomSockets));
+    }
+   io.to(`restaurant:${order.items[0].restaurantId.toString()}`).emit("order:status-updated", {
+      success: true,
+      order: {
+        orderId: order._id,
+        fullName: order.deliveryAddress.fullName,
+        items: order.items,
+        totalAmount: order.totalAmount,
+        deliveryAddress: order.deliveryAddress,
+        orderStatus: order.orderStatus,
+        createdAt: order.createdAt,
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Order status updated",
+      order,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 };

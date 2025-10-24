@@ -56,7 +56,16 @@ export default function Orders() {
         showNotification('Order picked up by driver', 'info');
       }
     });
-
+socket.on("order:status-updated", (data) => {
+      console.log(" Status updated:", data);
+      
+      if (data.success && data.orderId === orderId) {
+        setStatus(data.orderStatus);
+        if (data.order) {
+          setOrder(prev => ({ ...prev, ...data.order }));
+        }
+      }
+    });
  
    return () => {
       if (socketRef.current) {
@@ -72,7 +81,7 @@ export default function Orders() {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/orders/restaurant/${restaurantId}?orderStatus=confirmed,accepted,preparing,ready`
+        `http://localhost:5000/api/orders/restaurant/${restaurantId}?orderStatus=confirmed,accepted,preparing,ready,on_the_way,delivered`
       );
       const data = await response.json();
       
@@ -133,7 +142,7 @@ export default function Orders() {
 
   const getStatusColor = (status) => {
     const colors = {
-      confirmed: 'bg-yellow-100 text-yellow-800',
+      confirmed: 'bg-yellow-200 text-yellow-800',
       accepted: 'bg-blue-100 text-blue-800',
       preparing: 'bg-purple-100 text-purple-800',
       ready: 'bg-green-100 text-green-800',
@@ -152,15 +161,7 @@ export default function Orders() {
     return flow[currentStatus];
   };
 
-  const getNextStatusLabel = (currentStatus) => {
-    const labels = {
-      confirmed: 'Accept Order',
-      accepted: 'Start Preparing',
-      preparing: 'Mark as Ready',
-      ready: 'Waiting for Driver'
-    };
-    return labels[currentStatus] || 'Update';
-  };
+
 
   return (
     <Sidebar>
@@ -204,7 +205,7 @@ export default function Orders() {
                   
                   <p className="text-sm text-gray-600">{order.deliveryAddress?.fullName}</p>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.orderStatus)}`}>
                   {order.orderStatus.replace('_', ' ').toUpperCase()}
                 </span>
               </div>
