@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { Nav } from '@/components/common/nav';
 import { Truck, Package, CheckCircle, Clock, MapPin } from 'lucide-react';
+import Map from '../../../components/user/MapView'
 export default function TrackOrderPage({ 
   params 
 }: { 
@@ -92,6 +93,13 @@ export default function TrackOrderPage({
         setStatus('picked_up');
       }
     });
+    socket.on('driverLocationUpdate', (data) => {
+      console.log('Driver location:', data);
+      setDriverLocation({
+        lat: data.lat,
+        lng: data.lng
+      });
+    });
 
     socket.on("disconnect", () => {
       console.log(" Disconnected");
@@ -113,6 +121,7 @@ export default function TrackOrderPage({
         socket.off("order:created");
         socket.off("order:status-updated");
         socket.off("order:driver-assigned");
+        socket.off('driverLocationUpdate');
         socket.off("disconnect");
         socket.off("reconnect");
         socketRef.current.disconnect();
@@ -259,6 +268,15 @@ export default function TrackOrderPage({
           )}
         </div>
       </div>
+      <div>
+      <h1>Tracking Order #{orderId}</h1>
+      <p>Status: {order.orderStatus}</p>
+      {driverLocation && (
+        <p>Driver at: {driverLocation.lat}, {driverLocation.lng}</p>
+      )}
+    </div>
+    <Map driverLocation={driverLocation}
+          customerLocation={order.customerLocation}/>
      </div>
   );
 }

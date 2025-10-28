@@ -45,6 +45,10 @@ const orderSchema = new mongoose.Schema({
     country: { type: String, default: 'US' },
     deliveryInstructions: String
   },
+   customerLocation:{
+      lat: { type: Number, required: true },
+    lng: { type: Number, required: true }
+   },
   subtotal: {
     type: Number,
     required: true

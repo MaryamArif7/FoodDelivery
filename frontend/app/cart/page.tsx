@@ -16,7 +16,8 @@ export default function Cart() {
   const [openModal, setOpenModal] = useState(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
-  
+    const [customerLocation, setCustomerLocation] = useState(null);
+  const [address, setAddress] = useState('');
   // Address form state
   const [address, setAddress] = useState({
     fullName: user?.name || '',
@@ -117,7 +118,23 @@ export default function Cart() {
     return true;
   };
 
-  // Handle checkout with order creation
+ const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCustomerLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+          alert('Location captured!');
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          alert('Please enable location services');
+        }
+      );
+    }
+  };
   const handleCheckout = async () => {
     if (!user?.id) {
       toast.error("Please login to continue");
@@ -153,6 +170,7 @@ export default function Cart() {
           image: item.image
         })),
         deliveryAddress: address,
+        customerLocation: customerLocation,
         subtotal: totalAmount,
         deliveryFee: deliveryFee,
         tax: taxAmount,

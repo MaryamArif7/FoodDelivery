@@ -72,7 +72,20 @@ io.on("connection", (socket) => {
    })
    socket.on("leave-available-drivers",()=>{
    socket.leave('available-drivers');
-   })
+   });
+
+
+    socket.on('updateDriverLocation', (data) => {
+    const { orderId, lat, lng, driverId } = data;
+    io.to(`order-${orderId}`).emit('driverLocationUpdate', {
+      lat,
+      lng,
+      driverId,
+      timestamp: Date.now()
+    });
+
+  });
+
   socket.on('disconnect', () => {
    
     activeConnections.restaurants.forEach((socketId, restaurantId) => {

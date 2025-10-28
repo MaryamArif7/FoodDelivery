@@ -37,10 +37,31 @@ export default function Orders() {
          toast.success('New Order Recived for the pick up ')
         }
        });
+       const currentOrderId=orders.id;
+       const trackId=navigator.geolocation.watchPosition((position)=>{
+        const {latitude,longitude}=position.coords;
+        socket.emit('updateDriverLocation',{
+          orderId:currentOrderId,
+         lat:latitude,
+         lng:longitude,
+         driverId:driverId
+        });
+          console.log('Location sent:', latitude, longitude);
+       },
+       (error) => {
+        console.error('Error getting location:', error);
+      },
+      {
+        enableHighAccuracy:true,
+        timeout:5000,
+        maximumAge:0
+      }
+    );
        return()=>{
         if(socketRef.current){
           socket.off('connect');
           socket.off('new order for pick-up');
+            navigator.geolocation.clearWatch(trackId);
         }
        }
     },[])
@@ -64,7 +85,7 @@ export default function Orders() {
       });
       
       if (res.data.success) {
-        // Move order from pending to accepted
+     
         setOrders(prev => prev.filter(o => o.id !== orderId));
         setAcceptedOrders(prev => [...prev, {
           ...order,
@@ -88,7 +109,7 @@ export default function Orders() {
       });
 
       if (res.data.success) {
-        // Update the order status in state
+      
         setAcceptedOrders(prev => 
           prev.map(order => 
             order.id === orderId 
@@ -97,7 +118,7 @@ export default function Orders() {
           )
         );
         
-        // If delivered, remove from accepted orders after a delay
+     
         if (newStatus === 'delivered') {
           toast.success('Order delivered successfully!');
           setTimeout(() => {
@@ -167,7 +188,7 @@ export default function Orders() {
       <div className="min-h-screen bg-gray-50 p-6">
         <h1 className="text-2xl font-bold mb-4">Driver Dashboard</h1>
         
-        {/* Availability Toggle */}
+      
         <div className="mb-6 flex items-center gap-4">
           <h2 className={`font-semibold ${status === 'available' ? 'text-green-500' : 'text-red-500'}`}>
             Status: {status}
@@ -187,7 +208,7 @@ export default function Orders() {
           </button>
         </div>
 
-        {/* Incoming Orders */}
+      
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <h2 className="text-xl font-bold mb-2">Incoming Orders</h2>
           <p className="text-gray-600 mb-4">Accept them if you are able to deliver</p>
