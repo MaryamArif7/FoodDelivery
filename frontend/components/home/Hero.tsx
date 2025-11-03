@@ -25,7 +25,7 @@ export const Hero = () => {
     <div className="bg-white lg:bg-transparent">
       <Nav />
       <div className="flex flex-col lg:flex-row justify-between lg:px-8 xl:px-0">
-        <div className="space-y-6 md:space-y-8 pt-8 lg:pt-0 px-6 lg:px-0">
+        <div className="space-y-6 md:space-y-8 pt-8 lg:pt-0 px-8 lg:px-0">
           <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight">
             <span className="whitespace-nowrap">
               <span className="primary-text inline-block animate-pulse">
