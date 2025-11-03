@@ -22,7 +22,7 @@ export const Hero = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white lg:bg-transparent">
+    <div className=" bg-white lg:bg-transparent">
       <Nav />
       
       {/* Main Content Container */}
@@ -51,12 +51,12 @@ export const Hero = () => {
               restaurants, delivered with care to satisfy your hunger instantly.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl font-bold text-base lg:text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center">
+           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <button className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 md:px-7 lg:px-8 py-3 md:py-3.5 lg:py-4 rounded-xl font-bold text-base md:text-base lg:text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center group">
                 Start Ordering
                 <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="group bg-white/80 backdrop-blur-sm hover:bg-white text-gray-800 px-6 lg:px-8 py-3 lg:py-4 rounded-xl font-bold text-base lg:text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center border border-gray-200">
+              <button className="group bg-white/80 backdrop-blur-sm hover:bg-white text-gray-800 px-6 md:px-7 lg:px-8 py-3 md:py-3.5 lg:py-4 rounded-xl font-bold text-base md:text-base lg:text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center border border-gray-200">
                 <Play className="mr-2 w-5 h-5" />
                 Explore More
               </button>
@@ -72,19 +72,40 @@ export const Hero = () => {
             />
           </div>
 
-          {/* Right Column - Services */}
-          <div className="lg:col-span-7 xl:col-span-4 flex items-center">
-            <div className="w-full max-w-md mx-auto lg:mx-0 space-y-6 md:space-y-6 lg:space-y-8">
+        <div className="lg:hidden w-full px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {services.map((service) => (
-                <div key={service.title} className="flex items-start space-x-4 md:space-x-5 lg:space-x-6 p-4 lg:p-0">
-                  <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-2xl bg-gray-50 shadow-sm flex items-center justify-center hover:shadow-md transition-shadow">
+                <div
+                  key={service.title}
+                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+                >
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center mb-4 text-white">
                     {service.icon}
                   </div>
-                  <div className="flex-1 pt-1 md:pt-2">
-                    <h3 className="text-lg md:text-xl lg:text-xl font-bold text-gray-900 mb-1 md:mb-2">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {service.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop (lg+) - Original Vertical Stack */}
+          <div className="hidden lg:flex lg:col-span-7 xl:col-span-4 items-center">
+            <div className="w-full max-w-md mx-auto lg:mx-0 space-y-8 xl:space-y-10">
+              {services.map((service) => (
+                <div key={service.title} className="flex items-start space-x-6 p-2 lg:p-0">
+                  <div className="flex-shrink-0 w-14 h-14 xl:w-16 xl:h-16 rounded-2xl bg-gray-50 shadow-sm flex items-center justify-center hover:shadow-md transition-shadow">
+                    {service.icon}
+                  </div>
+                  <div className="flex-1 lg:pt-0">
+                    <h3 className="text-lg xl:text-xl font-bold text-gray-900 mb-1">
                       {service.title}
                     </h3>
-                    <p className="text-gray-600 text-sm md:text-base lg:text-base leading-relaxed">
+                    <p className="text-gray-600 text-sm xl:text-base leading-relaxed">
                       {service.description}
                     </p>
                   </div>
@@ -92,7 +113,7 @@ export const Hero = () => {
               ))}
             </div>
           </div>
-        </div>
+      </div>
       </div>
     </div>
   );

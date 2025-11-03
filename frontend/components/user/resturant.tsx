@@ -34,22 +34,23 @@ export const ResturantSection = () => {
     );
   }
 
-  return (
-    <div className="min-h-screen py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-         <CuisinesSection />
-        <div className=" mb-2">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2 px-8 text-center">
-             All Restaurants
-          </h1>
-        </div>
-        
-        <div className="space-y-16">
-          {resturants.map((resturant) => (
-            <ResturantDetails key={resturant._id} resturant={resturant} />
-          ))}
-        </div>
+return (
+  <div className="py-6 md:py-8 lg:py-12 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto">
+      <CuisinesSection />
+      
+      <div className="mt-8 md:mt-4 lg:mt-16 mb-6 md:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center">
+          All Restaurants
+        </h1>
+      </div>
+      
+      <div className="space-y-8 md:space-y-12 lg:space-y-16">
+        {resturants.map((resturant) => (
+          <ResturantDetails key={resturant._id} resturant={resturant} />
+        ))}
       </div>
     </div>
-  );
+  </div>
+);
 }
