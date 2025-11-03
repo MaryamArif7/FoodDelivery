@@ -18,14 +18,12 @@ export default function CheckoutForm() {
   const [paymentDetails, setPaymentDetails] = useState(null);
 
   useEffect(() => {
-    // Get payment details from localStorage
+  
     const details = localStorage.getItem('payment_details');
     if (details) {
       setPaymentDetails(JSON.parse(details));
     }
-
-    // Debug logs
-    console.log('🔍 CheckoutForm Debug:');
+    console.log(' CheckoutForm Debug:');
     console.log('Stripe loaded:', !!stripe);
     console.log('Elements loaded:', !!elements);
     console.log('Payment details:', details);
@@ -35,7 +33,7 @@ export default function CheckoutForm() {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      console.error('❌ Stripe or Elements not loaded');
+      console.error(' Stripe or Elements not loaded');
       return;
     }
 
@@ -43,7 +41,7 @@ export default function CheckoutForm() {
     setMessage(null);
 
     try {
-      console.log('💳 Confirming payment...');
+      console.log(' Confirming payment...');
       
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
@@ -54,7 +52,7 @@ export default function CheckoutForm() {
       });
 
       if (error) {
-        console.error('❌ Payment error:', error);
+        console.error('Payment error:', error);
         if (error.type === 'card_error' || error.type === 'validation_error') {
           setMessage(error.message);
         } else {
@@ -62,13 +60,13 @@ export default function CheckoutForm() {
         }
         setIsLoading(false);
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        console.log('✅ Payment succeeded!');
+        console.log(' Payment succeeded!');
         localStorage.removeItem('payment_client_secret');
         localStorage.removeItem('payment_details');
         router.push(`/payment-success?payment_intent=${paymentIntent.id}`);
       }
     } catch (err) {
-      console.error('💥 Payment error:', err);
+      console.error(' Payment error:', err);
       setMessage('Payment failed. Please try again.');
       setIsLoading(false);
     }
@@ -82,19 +80,7 @@ export default function CheckoutForm() {
 
   return (
     <div>
-      {/* Debug Info - REMOVE THIS AFTER TESTING */}
-      <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm">
-        <p className="font-semibold mb-2">🔍 Debug Info:</p>
-        <div className="space-y-1">
-          <p>Stripe loaded: {stripe ? '✅ Yes' : '❌ No'}</p>
-          <p>Elements loaded: {elements ? '✅ Yes' : '❌ No'}</p>
-          <p>Loading state: {isLoading ? 'Yes' : 'No'}</p>
-          <p>Button disabled: {buttonDisabled ? '❌ Yes' : '✅ No'}</p>
-          <p>Payment details: {paymentDetails ? '✅ Found' : '❌ Missing'}</p>
-        </div>
-      </div>
-
-      {/* Order Summary */}
+   
       {paymentDetails && (
         <div className="mb-6 p-4 bg-gray-50 rounded-lg">
           <h3 className="text-sm font-semibold text-gray-700 mb-2">Order Summary</h3>
@@ -113,8 +99,8 @@ export default function CheckoutForm() {
         <button
           disabled={buttonDisabled}
           type="submit"
-          className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold 
-                     hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed
+          className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-3 px-4 rounded-lg font-semibold 
+                    disabled:opacity-50 disabled:cursor-not-allowed
                      transition-colors duration-200"
         >
           {isLoading ? (
@@ -130,25 +116,17 @@ export default function CheckoutForm() {
           )}
         </button>
 
-        {/* Show why button is disabled */}
-        {buttonDisabled && !isLoading && (
-          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
-            <p className="text-yellow-800">
-              ⚠️ Button is disabled because:
-              {!stripe && <span className="block">• Stripe hasn't loaded yet</span>}
-              {!elements && <span className="block">• Payment form hasn't loaded yet</span>}
-            </p>
-          </div>
-        )}
+      
+        
 
-        {/* Show error message */}
+ 
         {message && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-red-800 text-sm">{message}</p>
           </div>
         )}
 
-        {/* Security badge */}
+      
         <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />

@@ -10,14 +10,13 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get client secret from localStorage (set by PaymentButton)
     const secret = localStorage.getItem('payment_client_secret');
     
     if (secret) {
       setClientSecret(secret);
       setLoading(false);
     } else {
-      // Redirect back if no payment intent
+    
       window.location.href = '/';
     }
   }, []);

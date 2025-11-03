@@ -1,5 +1,5 @@
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
- export default Map({ driverLocation, customerLocation })=> {
+ export default  Map=({ driverLocation, customerLocation })=>{
   const mapStyles = {
     height: "200px",
     width: "100%",
