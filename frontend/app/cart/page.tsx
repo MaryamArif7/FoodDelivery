@@ -19,7 +19,7 @@ export default function Cart() {
   const [openModal, setOpenModal] = useState(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
-  const [customerLocation, setCustomerLocation] = useState(null);
+  const [customerLocation, setCustomerLocation] = useState({lat:null,lang:null});
   const [address, setAddress] = useState({
     fullName: user?.name || "",
     phone: user?.phone || "",
@@ -125,11 +125,11 @@ export default function Cart() {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
-          alert("Location captured!");
+         toast.success("Location captured!");
         },
         (error) => {
           console.error("Error getting location:", error);
-          alert("Please enable location services");
+         toast.error("Please enable location services");
         }
       );
     }
@@ -149,6 +149,7 @@ export default function Cart() {
   const handleProceedToPayment = async () => {
     if (!validateAddress()) return;
     setCheckoutLoading(true);
+    getCurrentLocation();
     try {
       const orderData = {
         userId: user?.id,
