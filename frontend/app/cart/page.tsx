@@ -17,8 +17,8 @@ export default function Cart() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
     const [customerLocation, setCustomerLocation] = useState(null);
-  const [address, setAddress] = useState('');
-  // Address form state
+
+
   const [address, setAddress] = useState({
     fullName: user?.name || '',
     phone: user?.phone || '',
@@ -147,7 +147,7 @@ export default function Cart() {
       return;
     }
 
-    // Show address modal first
+ 
     setShowAddressModal(true);
   };
 
@@ -251,11 +251,14 @@ export default function Cart() {
       <Nav />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Shopping Cart</h1>
+          <h1 className=" text-xl lg:text-4xl md:text-xl font-bold text-gray-900">
+            Shopping Cart
+          </h1>
           <p className="text-gray-600 mt-2">{totalItems} items in your cart</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm">
               {isLoading ? (
@@ -266,39 +269,71 @@ export default function Cart() {
                 <div className="text-center py-12">
                   <ShoppingBag className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-600 text-lg">Your cart is empty</p>
-                  <Link href="/" className="mt-4 inline-block text-indigo-600 hover:text-indigo-700 font-medium">
+                  <Link
+                    href="/"
+                    className="mt-4 inline-block primary-text hover:text-indigo-700 font-medium"
+                  >
                     Start Shopping
                   </Link>
                 </div>
               ) : (
                 <ul className="divide-y divide-gray-200">
                   {cartItems?.map((item) => (
-                    <li key={item.menuId} className="p-6 hover:bg-gray-50 transition">
+                    <li
+                      key={item.menuId}
+                      className="p-6 hover:bg-gray-50 transition"
+                    >
                       <div className="flex gap-4">
-                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200">
-                          <img src={item.image || '/placeholder-food.jpg'} alt={item.menuId.name} className="h-full w-full object-cover" />
+                        <div className="h-20 w-20 md:h-24 md:w-24 lg:h-24 lg:w-24 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200">
+                          <img
+                            src={item.image || "/placeholder-food.jpg"}
+                            alt={item.menuId.name}
+                            className="h-full w-full object-cover"
+                          />
                         </div>
                         <div className="flex flex-1 flex-col justify-between">
                           <div>
                             <div className="flex justify-between">
                               <div>
-                                <h3 className="text-lg font-semibold text-gray-900">{item.menuId?.name}</h3>
-                                <p className="text-sm text-gray-600 mt-1">{item.restaurantId?.name || 'Restaurant'}</p>
+                                <h3 className="text-sm md:text-sm lg:text-lg font-semibold text-gray-900">
+                                  {item.menuId?.name}
+                                </h3>
+                                <p className="text-sm text-gray-600 mt-1">
+                                  {item.restaurantId?.name || "Restaurant"}
+                                </p>
                               </div>
-                              <p className="text-lg font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
+                              <p className="text-base sm:text-lg font-semibold text-gray-900 whitespace-nowrap">
+                                ${(item.price * item.quantity).toFixed(2)}
+                              </p>
                             </div>
                           </div>
                           <div className="flex items-center justify-between mt-4">
-                            <div className="flex items-center gap-3 border border-gray-300 rounded-lg">
-                              <button onClick={() => handleQuantityChange(item, item.quantity - 1)} className="p-2 hover:bg-gray-100 rounded-l-lg transition disabled:opacity-50 disabled:cursor-not-allowed" disabled={item.quantity <= 1}>
+                            <div className="flex items-center  gap-1 md:gap-3 lg:gap-3 border border-gray-300 rounded-lg">
+                              <button
+                                onClick={() =>
+                                  handleQuantityChange(item, item.quantity - 1)
+                                }
+                                className="p-2 hover:bg-gray-100 rounded-l-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={item.quantity <= 1}
+                              >
                                 <Minus className="h-4 w-4 text-gray-600" />
                               </button>
-                              <span className="px-4 font-medium text-gray-900">{item.quantity}</span>
-                              <button onClick={() => handleQuantityChange(item, item.quantity + 1)} className="p-2 hover:bg-gray-100 rounded-r-lg transition">
+                              <span className="px-4 font-medium text-gray-900">
+                                {item.quantity}
+                              </span>
+                              <button
+                                onClick={() =>
+                                  handleQuantityChange(item, item.quantity + 1)
+                                }
+                                className="p-2 hover:bg-gray-100 rounded-r-lg transition"
+                              >
                                 <Plus className="h-4 w-4 text-gray-600" />
                               </button>
                             </div>
-                            <button onClick={() => setOpenModal(item.menuId._id)} className="flex items-center gap-2 text-red-600 hover:text-red-700 font-medium transition">
+                            <button
+                              onClick={() => setOpenModal(item.menuId._id)}
+                              className="flex items-center gap-2 text-red-600 hover:text-red-700 font-medium transition"
+                            >
                               <Trash2 className="h-4 w-4" />
                               Remove
                             </button>
@@ -310,7 +345,10 @@ export default function Cart() {
                 </ul>
               )}
             </div>
-            <Link href="/" className="mt-4 inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium">
+            <Link
+              href="/"
+              className="mt-4 inline-flex items-center gap-2 primary-text font-medium"
+            >
               <ArrowLeft className="h-4 w-4" />
               Continue Shopping
             </Link>
@@ -318,7 +356,9 @@ export default function Cart() {
 
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Order Summary
+              </h2>
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal ({totalItems} items)</span>
@@ -339,17 +379,23 @@ export default function Cart() {
                   </div>
                 </div>
               </div>
-              <button onClick={handleCheckout} disabled={checkoutLoading || cartItems?.length === 0} className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+              <button
+                onClick={handleCheckout}
+                disabled={checkoutLoading || cartItems?.length === 0}
+                className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 {checkoutLoading ? (
                   <span className="flex items-center justify-center gap-2">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     Processing...
                   </span>
                 ) : (
-                  'Proceed to Checkout'
+                  "Proceed to Checkout"
                 )}
               </button>
-              <p className="text-xs text-gray-500 text-center mt-3">Secure payment powered by Stripe</p>
+              <p className="text-xs text-gray-500 text-center mt-3">
+                Secure payment powered by Stripe
+              </p>
             </div>
           </div>
         </div>
@@ -357,56 +403,136 @@ export default function Cart() {
 
       {/* Address Modal */}
       {showAddressModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-lg max-w-2xl w-full p-6 my-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Delivery Address</h3>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-auto md:max-w-xl lg:max-w-xl w-full p-6 my-8">
+            <h3 className=" text-sm md:tex-sm lg:text-xl font-bold text-gray-900 mb-4">
+              Delivery Address
+            </h3>
+            <form className="space-y-1 md:space-y-2 lg:space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 lg:gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                  <input type="text" name="fullName" value={address.fullName} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="John Doe" />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={address.fullName}
+                    onChange={handleAddressChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:ring-red-500"
+                    placeholder="Maryam"
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
-                  <input type="tel" name="phone" value={address.phone} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="+1 (555) 123-4567" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                <input type="email" name="email" value={address.email} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="john@example.com" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Street Address *</label>
-                <input type="text" name="street" value={address.street} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="123 Main Street" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Apartment, Suite (Optional)</label>
-                <input type="text" name="apartment" value={address.apartment} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Apt 4B" />
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
-                  <input type="text" name="city" value={address.city} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="New York" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
-                  <input type="text" name="state" value={address.state} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="NY" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Zip Code *</label>
-                  <input type="text" name="zipCode" value={address.zipCode} onChange={handleAddressChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="10001" />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone *
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={address.phone}
+                    onChange={handleAddressChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-red-500"
+                    placeholder="+923123-4567"
+                  />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Instructions (Optional)</label>
-                <textarea name="deliveryInstructions" value={address.deliveryInstructions} onChange={handleAddressChange} rows="2" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Leave at door, ring bell, etc."></textarea>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={address.email}
+                  onChange={handleAddressChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:ring-red-500"
+                  placeholder="maryam@example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Street Address *
+                </label>
+                <input
+                  type="text"
+                  name="street"
+                  value={address.street}
+                  onChange={handleAddressChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:ring-red-500"
+                  placeholder="123 Main Street"
+                />
+              </div>
+           
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    City *
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={address.city}
+                    onChange={handleAddressChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:ring-red-500"
+                    placeholder="Sialkot"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    State *
+                  </label>
+                  <input
+                    type="text"
+                    name="state"
+                    value={address.state}
+                    onChange={handleAddressChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:ring-red-500"
+                    placeholder="Punjab"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Zip Code *
+                  </label>
+                  <input
+                    type="text"
+                    name="zipCode"
+                    value={address.zipCode}
+                    onChange={handleAddressChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:ring-red-500"
+                    placeholder="10001"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Delivery Instructions (Optional)
+                </label>
+                <textarea
+                  name="deliveryInstructions"
+                  value={address.deliveryInstructions}
+                  onChange={handleAddressChange}
+                  rows="2"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:ring-red-500"
+                  placeholder="Leave at door, ring bell, etc."
+                ></textarea>
               </div>
               <div className="flex gap-3 pt-4">
-                <button type="button" onClick={() => setShowAddressModal(false)} className="flex-1 px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition">
+                <button
+                  type="button"
+                  onClick={() => setShowAddressModal(false)}
+                  className="flex-1 px-1 md:px-6 lg:px-6 py-1 md:py-2 lg:py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"
+                >
                   Cancel
                 </button>
-                <button type="button" onClick={handleProceedToPayment} disabled={checkoutLoading} className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 transition">
-                  {checkoutLoading ? 'Processing...' : 'Continue to Payment'}
+                <button
+                  type="button"
+                  onClick={handleProceedToPayment}
+                  disabled={checkoutLoading}
+                  className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 transition"
+                >
+                  {checkoutLoading ? "Processing..." : "Continue to Payment"}
                 </button>
               </div>
             </form>
@@ -418,13 +544,23 @@ export default function Cart() {
       {openModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Remove Item</h3>
-            <p className="text-gray-600 mb-6">Are you sure you want to remove this item from your cart?</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Remove Item
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to remove this item from your cart?
+            </p>
             <div className="flex gap-3">
-              <button onClick={() => setOpenModal(null)} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition">
+              <button
+                onClick={() => setOpenModal(null)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"
+              >
                 Cancel
               </button>
-              <button onClick={() => handleRemove(openModal)} className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition">
+              <button
+                onClick={() => handleRemove(openModal)}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition"
+              >
                 Remove
               </button>
             </div>

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Home, Store, Calendar, User, Menu, X } from "lucide-react";
+import { Home, Store, Calendar, User, Menu, X , ShoppingCart} from "lucide-react";
 
 export const Nav = () => {
   const [activeTab, setActiveTab] = useState("home");
@@ -56,7 +56,19 @@ export const Nav = () => {
               <Store className="w-5 h-5" />
               <span className="font-medium">Restaurants</span>
             </Link>
-
+          
+            <Link
+              href="/cart"
+              onClick={() => setActiveTab("meal")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 ${
+                activeTab === "meal"
+                  ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              <ShoppingCart className="w-5 h-5" />
+              <span className="font-medium">Cart</span>
+            </Link>
             <Link
               href="/meal-planner"
               onClick={() => setActiveTab("meal")}
@@ -91,6 +103,7 @@ export const Nav = () => {
               <Menu className="w-6 h-6" />
             )}
           </button>
+
         </div>
 
         {/* Mobile Navigation Menu */}
@@ -121,7 +134,18 @@ export const Nav = () => {
               <Store className="w-5 h-5" />
               <span className="font-medium">Restaurants</span>
             </Link>
-
+               <Link
+              href="/cart"
+              onClick={() => setActiveTab("meal")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 ${
+                activeTab === "meal"
+                  ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              <ShoppingCart className="w-5 h-5" />
+              <span className="font-medium">Cart</span>
+            </Link>
             <Link
               href="/meal-planner"
               onClick={() => handleLinkClick("meal")}
@@ -134,7 +158,7 @@ export const Nav = () => {
               <Calendar className="w-5 h-5" />
               <span className="font-medium">Meal Planner</span>
             </Link>
-
+    
             <Link
               href="/auth/signin"
               onClick={() => setIsMenuOpen(false)}
