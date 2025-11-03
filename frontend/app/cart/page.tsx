@@ -1,13 +1,16 @@
-"use client"
-import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Link from 'next/link'
-import { useRouter } from 'next/navigation';
+"use client";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Nav } from "./../../components/common/nav";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { updateCartQuantity, deleteCartItems, fetchCartItems } from '@/lib/features/cartSlice';
-
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
+import {
+  updateCartQuantity,
+  deleteCartItems,
+  fetchCartItems,
+} from "@/lib/features/cartSlice";
 export default function Cart() {
   const dispatch = useDispatch();
   const { cartItems, isLoading } = useSelector((state) => state.cart);
@@ -16,47 +19,43 @@ export default function Cart() {
   const [openModal, setOpenModal] = useState(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
-    const [customerLocation, setCustomerLocation] = useState(null);
-
-
+  const [customerLocation, setCustomerLocation] = useState(null);
   const [address, setAddress] = useState({
-    fullName: user?.name || '',
-    phone: user?.phone || '',
-    email: user?.email || '',
-    street: '',
-    apartment: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'US',
-    deliveryInstructions: ''
+    fullName: user?.name || "",
+    phone: user?.phone || "",
+    email: user?.email || "",
+    street: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "US",
+    deliveryInstructions: "",
   });
-
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchCartItems(user?.id));
     }
   }, [dispatch, user]);
+  const totalAmount =
+    cartItems?.reduce(
+      (amount, item) => item.price * item.quantity + amount,
+      0
+    ) || 0;
 
-  const totalAmount = cartItems?.reduce(
-    (amount, item) => item.price * item.quantity + amount,
-    0
-  ) || 0;
-  
-  const deliveryFee = 3.00;
+  const deliveryFee = 3.0;
   const taxRate = 0.03;
   const taxAmount = totalAmount * taxRate;
   const finalTotal = totalAmount + deliveryFee + taxAmount;
   const totalItems = cartItems?.length || 0;
-
   const handleQuantityChange = (item, newQuantity) => {
     if (newQuantity < 1) return;
-    
-    dispatch(updateCartQuantity({
-      id: user?.id,
-      menuId: item.menuId._id,
-      quantity: newQuantity
-    })).then((data) => {
+    dispatch(
+      updateCartQuantity({
+        id: user?.id,
+        menuId: item.menuId._id,
+        quantity: newQuantity,
+      })
+    ).then((data) => {
       if (data?.payload?.success) {
         toast.success("Cart updated");
       } else {
@@ -64,12 +63,13 @@ export default function Cart() {
       }
     });
   };
-
   const handleRemove = (menuId) => {
-    dispatch(deleteCartItems({
-      id: user?.id,
-      menuId: menuId
-    })).then((data) => {
+    dispatch(
+      deleteCartItems({
+        id: user?.id,
+        menuId: menuId,
+      })
+    ).then((data) => {
       if (data?.payload?.success) {
         toast.success("Item removed from cart");
         setOpenModal(null);
@@ -78,59 +78,58 @@ export default function Cart() {
       }
     });
   };
-
   const handleAddressChange = (e) => {
     setAddress({
       ...address,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const validateAddress = () => {
     if (!address.fullName.trim()) {
-      toast.error('Please enter your full name');
+      toast.error("Please enter your full name");
       return false;
     }
     if (!address.phone.trim()) {
-      toast.error('Please enter your phone number');
+      toast.error("Please enter your phone number");
       return false;
     }
     if (!address.email.trim()) {
-      toast.error('Please enter your email');
+      toast.error("Please enter your email");
       return false;
     }
     if (!address.street.trim()) {
-      toast.error('Please enter your street address');
+      toast.error("Please enter your street address");
       return false;
     }
     if (!address.city.trim()) {
-      toast.error('Please enter your city');
+      toast.error("Please enter your city");
       return false;
     }
     if (!address.state.trim()) {
-      toast.error('Please enter your state');
+      toast.error("Please enter your state");
       return false;
     }
     if (!address.zipCode.trim()) {
-      toast.error('Please enter your zip code');
+      toast.error("Please enter your zip code");
       return false;
     }
     return true;
   };
 
- const getCurrentLocation = () => {
+  const getCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setCustomerLocation({
             lat: position.coords.latitude,
-            lng: position.coords.longitude
+            lng: position.coords.longitude,
           });
-          alert('Location captured!');
+          alert("Location captured!");
         },
         (error) => {
-          console.error('Error getting location:', error);
-          alert('Please enable location services');
+          console.error("Error getting location:", error);
+          alert("Please enable location services");
         }
       );
     }
@@ -141,33 +140,26 @@ export default function Cart() {
       router.push("/login");
       return;
     }
-
     if (cartItems?.length === 0) {
       toast.error("Your cart is empty");
       return;
     }
-
- 
     setShowAddressModal(true);
   };
-
   const handleProceedToPayment = async () => {
     if (!validateAddress()) return;
-
     setCheckoutLoading(true);
-
     try {
-      // Step 1: Create order with status "pending"
       const orderData = {
         userId: user?.id,
-        items: cartItems?.map(item => ({
+        items: cartItems?.map((item) => ({
           menuId: item.menuId._id,
           name: item.menuId?.name,
           quantity: item.quantity,
           price: item.price,
           restaurantId: item.restaurantId?._id,
           restaurantName: item.restaurantId?.name,
-          image: item.image
+          image: item.image,
         })),
         deliveryAddress: address,
         customerLocation: customerLocation,
@@ -175,71 +167,72 @@ export default function Cart() {
         deliveryFee: deliveryFee,
         tax: taxAmount,
         totalAmount: finalTotal,
-        paymentStatus: 'pending',
-        orderStatus: 'pending'
+        paymentStatus: "pending",
+        orderStatus: "pending",
       };
 
-      // Create order in your database
-      const orderResponse = await fetch('http://localhost:5000/api/orders/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      });
-
+      const orderResponse = await fetch(
+        "http://localhost:5000/api/orders/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(orderData),
+        }
+      );
       const orderResult = await orderResponse.json();
-
       if (!orderResult.success) {
         toast.error("Failed to create order");
         setCheckoutLoading(false);
         return;
       }
-
       const orderId = orderResult.data._id || orderResult.data.orderId;
-
-      // Step 2: Create payment intent
-      const paymentResponse = await fetch('http://localhost:5000/api/payment/create-payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: finalTotal,
-          currency: 'usd',
-          userId: user?.id,
-          orderId: orderId, // Link payment to order
-          productDetails: {
-            orderId: orderId,
-            items: cartItems?.length,
-            deliveryAddress: address
+      const paymentResponse = await fetch(
+        "http://localhost:5000/api/payment/create-payment-intent",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-          customerEmail: address.email
-        }),
-      });
-
+          body: JSON.stringify({
+            amount: finalTotal,
+            currency: "usd",
+            userId: user?.id,
+            orderId: orderId,
+            productDetails: {
+              orderId: orderId,
+              items: cartItems?.length,
+              deliveryAddress: address,
+            },
+            customerEmail: address.email,
+          }),
+        }
+      );
       const paymentData = await paymentResponse.json();
-
       if (paymentData.success && paymentData.data.clientSecret) {
-        // Store everything needed for checkout
-        localStorage.setItem('payment_client_secret', paymentData.data.clientSecret);
-        localStorage.setItem('order_id', orderId);
-        localStorage.setItem('delivery_address', JSON.stringify(address));
-        localStorage.setItem('payment_details', JSON.stringify({
-          amount: finalTotal,
-          items: cartItems?.length,
-          orderId: orderId
-        }));
-
-        // Navigate to checkout page
+        localStorage.setItem(
+          "payment_client_secret",
+          paymentData.data.clientSecret
+        );
+        localStorage.setItem("order_id", orderId);
+        localStorage.setItem("delivery_address", JSON.stringify(address));
+        localStorage.setItem(
+          "payment_details",
+          JSON.stringify({
+            amount: finalTotal,
+            items: cartItems?.length,
+            orderId: orderId,
+          })
+        );
         setShowAddressModal(false);
-        router.push('/checkout');
+        router.push("/checkout");
         toast.success("Proceeding to payment...");
       } else {
         toast.error(paymentData.message || "Failed to initialize payment");
       }
     } catch (error) {
-      console.error('Checkout error:', error);
+      console.error("Checkout error:", error);
       toast.error("Failed to proceed to checkout");
     } finally {
       setCheckoutLoading(false);
@@ -258,7 +251,6 @@ export default function Cart() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm">
               {isLoading ? (
@@ -393,164 +385,155 @@ export default function Cart() {
                   "Proceed to Checkout"
                 )}
               </button>
-             
             </div>
           </div>
         </div>
       </div>
 
-      
-     {showAddressModal && (
-  <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 overflow-y-auto">
-    <div className="bg-white rounded-lg w-full max-w-md md:max-w-lg lg:max-w-xl p-4 md:p-6 my-8">
-      <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4 md:mb-6">
-        Delivery Address
-      </h3>
-      <form className="space-y-1 md:space-y-2">
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-          <div>
-            <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
-              Full Name *
-            </label>
-            <input
-              type="text"
-              name="fullName"
-              value={address.fullName}
-              onChange={handleAddressChange}
-              className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
-              placeholder="Maryam"
-            />
+      {showAddressModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg w-full max-w-md md:max-w-lg lg:max-w-xl p-4 md:p-6 my-8">
+            <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4 md:mb-6">
+              Delivery Address
+            </h3>
+            <form className="space-y-1 md:space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                <div>
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={address.fullName}
+                    onChange={handleAddressChange}
+                    className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
+                    placeholder="Maryam"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
+                    Phone *
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={address.phone}
+                    onChange={handleAddressChange}
+                    className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
+                    placeholder="+923123-4567"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={address.email}
+                  onChange={handleAddressChange}
+                  className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
+                  placeholder="maryam@example.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
+                  Street Address *
+                </label>
+                <input
+                  type="text"
+                  name="street"
+                  value={address.street}
+                  onChange={handleAddressChange}
+                  className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
+                  placeholder="123 Main Street"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+                <div>
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
+                    City *
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={address.city}
+                    onChange={handleAddressChange}
+                    className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
+                    placeholder="Sialkot"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
+                    State *
+                  </label>
+                  <input
+                    type="text"
+                    name="state"
+                    value={address.state}
+                    onChange={handleAddressChange}
+                    className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
+                    placeholder="Punjab"
+                  />
+                </div>
+                <div className="col-span-2 md:col-span-1">
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
+                    Zip Code *
+                  </label>
+                  <input
+                    type="text"
+                    name="zipCode"
+                    value={address.zipCode}
+                    onChange={handleAddressChange}
+                    className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
+                    placeholder="10001"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
+                  Delivery Instructions (Optional)
+                </label>
+                <textarea
+                  name="deliveryInstructions"
+                  value={address.deliveryInstructions}
+                  onChange={handleAddressChange}
+                  rows="3"
+                  className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition resize-none"
+                  placeholder="Leave at door, ring bell, etc."
+                ></textarea>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-2 md:pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAddressModal(false)}
+                  className="w-full sm:flex-1 px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleProceedToPayment}
+                  disabled={checkoutLoading}
+                  className="w-full sm:flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2.5 md:py-3 text-sm md:text-base rounded-lg font-semibold hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                >
+                  {checkoutLoading ? "Processing..." : "Continue to Payment"}
+                </button>
+              </div>
+            </form>
           </div>
-          <div>
-            <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
-              Phone *
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={address.phone}
-              onChange={handleAddressChange}
-              className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
-              placeholder="+923123-4567"
-            />
-          </div>
         </div>
+      )}
 
-
-        <div>
-          <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
-            Email *
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={address.email}
-            onChange={handleAddressChange}
-            className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
-            placeholder="maryam@example.com"
-          />
-        </div>
-
-      
-        <div>
-          <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
-            Street Address *
-          </label>
-          <input
-            type="text"
-            name="street"
-            value={address.street}
-            onChange={handleAddressChange}
-            className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
-            placeholder="123 Main Street"
-          />
-        </div>
-
-      
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
-          <div>
-            <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
-              City *
-            </label>
-            <input
-              type="text"
-              name="city"
-              value={address.city}
-              onChange={handleAddressChange}
-              className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
-              placeholder="Sialkot"
-            />
-          </div>
-          <div>
-            <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
-              State *
-            </label>
-            <input
-              type="text"
-              name="state"
-              value={address.state}
-              onChange={handleAddressChange}
-              className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
-              placeholder="Punjab"
-            />
-          </div>
-          <div className="col-span-2 md:col-span-1">
-            <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
-              Zip Code *
-            </label>
-            <input
-              type="text"
-              name="zipCode"
-              value={address.zipCode}
-              onChange={handleAddressChange}
-              className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition"
-              placeholder="10001"
-            />
-          </div>
-        </div>
-
-       
-        <div>
-          <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1.5">
-            Delivery Instructions (Optional)
-          </label>
-          <textarea
-            name="deliveryInstructions"
-            value={address.deliveryInstructions}
-            onChange={handleAddressChange}
-            rows="3"
-            className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg  focus:ring-red-500 focus:border-red-500 transition resize-none"
-            placeholder="Leave at door, ring bell, etc."
-          ></textarea>
-        </div>
-
-        
-        <div className="flex flex-col sm:flex-row gap-3 pt-2 md:pt-4">
-          <button
-            type="button"
-            onClick={() => setShowAddressModal(false)}
-            className="w-full sm:flex-1 px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={handleProceedToPayment}
-            disabled={checkoutLoading}
-            className="w-full sm:flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2.5 md:py-3 text-sm md:text-base rounded-lg font-semibold hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
-          >
-            {checkoutLoading ? "Processing..." : "Continue to Payment"}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
-
-      {/* Delete Confirmation Modal */}
       {openModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
               Remove Item
