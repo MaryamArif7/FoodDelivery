@@ -65,7 +65,7 @@ export const Hero = () => {
             </div>
           </div>
 
-          {/* Middle Column - Image (hidden on mobile and tablet) */}
+        
           <div className="hidden xl:flex xl:col-span-3 items-center justify-center">
             <img
               className="w-full max-w-sm h-auto object-contain"
@@ -74,8 +74,7 @@ export const Hero = () => {
             />
           </div>
 
-          {/* Right Column - Services */}
-          {/* Mobile & Tablet (md) - Vertical Layout */}
+       
           <div className="lg:hidden w-full px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {services.map((service) => (
@@ -97,7 +96,6 @@ export const Hero = () => {
             </div>
           </div>
 
-          {/* Desktop (lg+) - Original Vertical Stack */}
           <div className="hidden lg:flex lg:col-span-7 xl:col-span-4 items-center">
             <div className="w-full max-w-md mx-auto lg:mx-0 space-y-8 xl:space-y-10">
               {services.map((service) => (
