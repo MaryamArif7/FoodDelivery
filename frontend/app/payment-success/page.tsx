@@ -92,7 +92,6 @@ export default function PaymentSuccess() {
   return (
     <div>
       <Nav />
-
       <div className="pt-10 bg-gray-50 flex items-center justify-center">
         <div className="max-w-xl w-full">
           {status === "success" ? (
