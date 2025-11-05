@@ -86,14 +86,12 @@ console.log(user?.menu?.length);
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-           
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
               <h3 className="text-xl font-semibold text-gray-700 mb-4">
                 Item Details
               </h3>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-               
                 <div>
                   <label
                     htmlFor="name"
@@ -112,7 +110,6 @@ console.log(user?.menu?.length);
                   />
                 </div>
 
-           
                 <div>
                   <label
                     htmlFor="description"
@@ -131,7 +128,6 @@ console.log(user?.menu?.length);
                   />
                 </div>
 
-         
                 <div>
                   <label
                     htmlFor="price"
@@ -152,7 +148,6 @@ console.log(user?.menu?.length);
                   />
                 </div>
 
-               
                 <div>
                   <label
                     htmlFor="image"
@@ -180,7 +175,6 @@ console.log(user?.menu?.length);
                   )}
                 </div>
 
-              
                 <div className="flex gap-3 pt-4">
                   <button
                     type="button"
@@ -199,7 +193,6 @@ console.log(user?.menu?.length);
               </form>
             </div>
 
-          
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-semibold text-gray-700">
@@ -212,7 +205,6 @@ console.log(user?.menu?.length);
 
               {items.length === 0 ? (
                 <div className="text-center py-12 text-gray-400">
-                
                   <p className="text-lg font-medium">No items added yet</p>
                   <p className="text-sm">
                     Add items using the form on the left
@@ -226,7 +218,6 @@ console.log(user?.menu?.length);
                       className="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                     >
                       <div className="flex gap-4">
-                     
                         <div className="flex-shrink-0">
                           {item.image ? (
                             <img
@@ -241,7 +232,6 @@ console.log(user?.menu?.length);
                           )}
                         </div>
 
-                      
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2 mb-1">
                             <h4 className="font-semibold text-gray-800 truncate">
@@ -256,7 +246,6 @@ console.log(user?.menu?.length);
                           </p>
                         </div>
 
-                       
                         <button
                           onClick={() => {
                             setItems(items.filter((_, i) => i !== index));
@@ -288,10 +277,10 @@ console.log(user?.menu?.length);
         </div>
       ) : (
         <div>
-          <h2 className="mt-10 font-bold text-3xl mb-10">
+          <h2 className="  mt-10 font-bold text-2xl lg:text-3xl mb-10">
             Manage your Menu Here
           </h2>
-          <div className="flex justify-between gap-5 ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {user.menu?.map((item, index) => (
               <MenuCard
                 key={item._id}
