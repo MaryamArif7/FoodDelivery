@@ -1,5 +1,6 @@
 import Resturant from "../models/Resturants.js";
 import Item from "../models/Item.js";
+import Order from "../models/Order.js";
 export const getAllResturants = async (req, res) => {
   try {
     const getAllResturants = await Resturant.find({ approved: "active" }).populate('menu');
@@ -44,3 +45,23 @@ export const addMenu = async (req, res) => {
 };
 
 
+export const resturantStats = async (req, res) => {
+  try {
+    const { id } = req.params;
+  const orderCount = await Order.countDocuments({ 
+      "items.restaurantId": id 
+    });
+    console.log(orderCount);
+    return res.status(200).json({
+      message: "Success",
+      data: {
+        Orders: orderCount,
+      },
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: "Failed to fetch stats",
+      error: e.message,
+    });
+  }
+};
