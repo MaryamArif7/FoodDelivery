@@ -21,6 +21,7 @@ const dispatch = useDispatch();
       const result = await axios.post("http://localhost:5000/api/signin", data);
       console.log(result);
        dispatch(setCredentials({ user: result.data.user, token: result.data.token }));
+        localStorage.setItem("token", result.data.token);
       if ( result?.data?.user?.role==="user"){
         router.push("/");
       }

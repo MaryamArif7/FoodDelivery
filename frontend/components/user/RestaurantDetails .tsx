@@ -2,11 +2,13 @@ import { Card } from "./card";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart,fetchCartItems } from "@/lib/features/cartSlice"
 import toast, { Toaster } from 'react-hot-toast';
+import { useAuth } from "@/app/hooks/useAuth";
 export const ResturantDetails = ({ resturant }) => {
   const dispatch=useDispatch();
  const { user } = useSelector((state) => state.auth);
-console.log(user);
+ const {checkAuth,authenticated}=useAuth();
  const handleAddToCart = (menu) => {
+  if(!checkAuth()) return;
   console.log(user);
   console.log(resturant);
     console.log("price test", { price: resturant?.menu.price });

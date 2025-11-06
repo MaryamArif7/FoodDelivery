@@ -15,12 +15,12 @@ export const Nav = () => {
     setActiveTab(tab);
     setIsMenuOpen(false);
   };
-
+console.log(activeTab);
   return (
     <nav className="top-0 z-50 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          {/* Logo - responsive sizing */}
+      
           <Link href="/" className="flex-shrink-0">
             <img
               src="/logo3.png"
@@ -29,7 +29,6 @@ export const Nav = () => {
             />
           </Link>
 
-          {/* Desktop Navigation - shows from lg breakpoint */}
           <div className="hidden lg:flex items-center gap-2">
             <Link
               href="/"
@@ -45,23 +44,23 @@ export const Nav = () => {
             </Link>
 
             <Link
-              href="/restaurants"
-              onClick={() => setActiveTab("restaurants")}
+              href="/resturants"
+              onClick={() => setActiveTab("Resturants")}
               className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 ${
-                activeTab === "restaurants"
+                activeTab === "Resturants"
                   ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
             >
               <Store className="w-5 h-5" />
-              <span className="font-medium">Restaurants</span>
+              <span className="font-medium">Resturants</span>
             </Link>
           
             <Link
               href="/cart"
-              onClick={() => setActiveTab("meal")}
+              onClick={() => setActiveTab("cart")}
               className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 ${
-                activeTab === "meal"
+                activeTab === "cart"
                   ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
@@ -71,9 +70,9 @@ export const Nav = () => {
             </Link>
             <Link
               href="/meal-planner"
-              onClick={() => setActiveTab("meal")}
+              onClick={() => setActiveTab("meal-planner")}
               className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 ${
-                activeTab === "meal"
+                activeTab === "meal-planner"
                   ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
@@ -91,7 +90,7 @@ export const Nav = () => {
             </Link>
           </div>
 
-          {/* Mobile Menu Button - shows up to lg breakpoint */}
+     
           <button
             onClick={toggleMenu}
             className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
@@ -106,7 +105,7 @@ export const Nav = () => {
 
         </div>
 
-        {/* Mobile Navigation Menu */}
+      
         {isMenuOpen && (
           <div className="lg:hidden mt-4 pb-4 space-y-2">
             <Link
@@ -123,22 +122,22 @@ export const Nav = () => {
             </Link>
 
             <Link
-              href="/restaurants"
-              onClick={() => handleLinkClick("restaurants")}
+              href="/resturants"
+              onClick={() => handleLinkClick("resturants")}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                activeTab === "restaurants"
+                activeTab === "resturants"
                   ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
             >
               <Store className="w-5 h-5" />
-              <span className="font-medium">Restaurants</span>
+              <span className="font-medium">Resturants</span>
             </Link>
                <Link
               href="/cart"
-              onClick={() => setActiveTab("meal")}
+              onClick={() => setActiveTab("cart")}
               className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 ${
-                activeTab === "meal"
+                activeTab === "cart"
                   ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
@@ -148,9 +147,9 @@ export const Nav = () => {
             </Link>
             <Link
               href="/meal-planner"
-              onClick={() => handleLinkClick("meal")}
+              onClick={() => handleLinkClick("meal-planner")}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                activeTab === "meal"
+                activeTab === "meal-planner"
                   ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
