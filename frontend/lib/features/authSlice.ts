@@ -24,8 +24,17 @@ const authSlice = createSlice({
             state.token = null;
             state.role = null;
         },
+        updateResturantMenu: (state, action) => {
+            const { menuId, price } = action.payload;
+            if (state.user && state.user.menu) {
+                const menuItem = state.user.menu.find(item => item._id === menuId);
+                if (menuItem) {
+                    menuItem.price = price;
+                }
+            }
+        }
     }
 })
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, logout,updateResturantMenu} = authSlice.actions;
 export default authSlice.reducer;

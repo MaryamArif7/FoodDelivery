@@ -51,7 +51,7 @@ export const resturantStats = async (req, res) => {
   const orderCount = await Order.countDocuments({ 
       "items.restaurantId": id 
     });
-    console.log(orderCount);
+   // console.log(orderCount);
     return res.status(200).json({
       message: "Success",
       data: {
@@ -61,6 +61,55 @@ export const resturantStats = async (req, res) => {
   } catch (e) {
     return res.status(500).json({
       message: "Failed to fetch stats",
+      error: e.message,
+    });
+  }
+};
+export const EditMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(req);
+    console.log(req.body);
+    const { price } = req.body;
+    const updatedMenu = await Item.findByIdAndUpdate(
+      id,
+      {
+        price: price,
+      },
+      { new: true }
+    );
+    return res.status(200).json({
+      message: "Success",
+      data: {
+        menu: updatedMenu,
+      },
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: "Failed to update the Menu Price",
+      error: e.message,
+    });
+  }
+};
+export const DeleteMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedMenu = await Item.findByIdAndDelete(id);
+
+    if (!deletedMenu) {
+      return res.status(404).json({
+        message: "Menu item not found",
+      });
+    }
+    return res.status(200).json({
+      message: "Menu item deleted successfully",
+      data: {
+        menu: deletedMenu,
+      },
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: "Failed to update the Menu Price",
       error: e.message,
     });
   }

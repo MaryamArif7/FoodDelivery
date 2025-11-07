@@ -1,14 +1,17 @@
 "use client";
 import axios from "axios";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
+import  {updateResturantMenu} from "@/lib/features/authSlice";
 import { Sidebar } from "../../../components/resturant/sidebar";
 import { MenuCard } from "@/components/resturant/MenuCard";
 export default function Menu() {
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   console.log(user);
   const [items, setItems] = useState([]);
+  const [editingItem, setEditingItem] = useState(null);
   const [currentItem, setCurrentItem] = useState({
     name: "",
     description: "",
@@ -74,9 +77,35 @@ export default function Menu() {
       console.error("Error:", error);
     }
   };
-  const onMenuEdit = () => {};
+  // console.log(items);
+
+  const onMenuEdit = (item) => {
+    setEditingItem(item);
+  };
+
+  const onMenuClose = () => {
+    setEditingItem(null);
+  };
+  const handleSave = async (id, price) => {
+    try {
+      const res = await axios.put(
+        `http://localhost:5000/api/resturant/edit/${id}`,
+        {
+          price,
+        }
+      );
+      if (res.data.message == "Success") {
+        dispatch(updateResturantMenu({menuId: id, price }));
+        toast.success("Menu Item edited Successfully");
+        onMenuClose();
+      }
+    } catch (e) {
+      console.error("Error:", e);
+      toast.error(e.response?.data?.message || "Failed to update menu item");
+    }
+  };
   const onMenuDelete = () => {};
-console.log(user?.menu?.length);
+
   return (
     <Sidebar>
       {user?.menu?.length < 1 ? (
@@ -287,6 +316,9 @@ console.log(user?.menu?.length);
                 item={item}
                 onEdit={onMenuEdit}
                 onDelete={onMenuDelete}
+                isEditing={editingItem?._id === item._id}
+                onClose={onMenuClose}
+                handleSave={handleSave}
               />
             ))}
           </div>
