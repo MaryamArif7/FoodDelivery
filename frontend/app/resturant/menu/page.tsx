@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import  {updateResturantMenu} from "@/lib/features/authSlice";
 import { Sidebar } from "../../../components/resturant/sidebar";
 import { MenuCard } from "@/components/resturant/MenuCard";
+import { Trash } from 'lucide-react';
 export default function Menu() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -300,19 +301,7 @@ export default function Menu() {
                           className="flex-shrink-0 text-red-500 hover:text-red-700 transition-colors"
                           title="Remove item"
                         >
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
+                           <Trash />
                         </button>
                       </div>
                     </div>

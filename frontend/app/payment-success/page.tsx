@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { fetchCartItems } from "@/lib/features/cartSlice";
-import { ShoppingBag, Package, Home, CheckCircle } from 'lucide-react';
+import { ShoppingBag, Package, Home, CheckCircle,CheckCheck,CircleX } from 'lucide-react';
 import { Nav } from "@/components/common/nav";
 export default function PaymentSuccess() {
   const searchParams = useSearchParams();
@@ -99,19 +99,7 @@ export default function PaymentSuccess() {
               <div className="relative w-24 h-24 mx-auto mb-6">
                 <div className="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-75"></div>
                 <div className="relative w-24 h-24 bg-green-500 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-12 h-12 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="3"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
+             <CheckCheck />
                 </div>
               </div>
 
@@ -151,19 +139,7 @@ export default function PaymentSuccess() {
           ) : (
             <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
               <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg
-                  className="w-12 h-12 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="3"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+             <CircleX />
               </div>
 
               <h1 className="text-3xl font-bold text-gray-900 mb-3">
