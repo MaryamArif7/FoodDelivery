@@ -11,6 +11,7 @@ export default function Menu() {
   const dispatch = useDispatch();
   console.log(user);
   const [items, setItems] = useState([]);
+  const [Deleting,setDeleting]=useState(null);
   const [editingItem, setEditingItem] = useState(null);
   const [currentItem, setCurrentItem] = useState({
     name: "",
@@ -104,8 +105,25 @@ export default function Menu() {
       toast.error(e.response?.data?.message || "Failed to update menu item");
     }
   };
-  const onMenuDelete = () => {};
-
+    const onMenuDelete = (item) => {
+    setDeleting(item);
+  };
+  const  handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`http://localhost:5000/api/resturant/delete/${id}`);
+      if (res.data.message == "Success") {
+        dispatch(updateResturantMenu({ menuId: id }));
+        toast.success("Menu Item deleted Successfully");
+      setDeleting(null);
+      }
+    } catch (e) {
+      console.error("Error:", e);
+      toast.error(e.response?.data?.message || "Failed to delete menu item");
+    }
+  };
+  const cancelDelete = () => {
+    setDeleting(null);
+  };
   return (
     <Sidebar>
       {user?.menu?.length < 1 ? (
@@ -319,7 +337,9 @@ export default function Menu() {
                 isEditing={editingItem?._id === item._id}
                 onClose={onMenuClose}
                 handleSave={handleSave}
-              />
+                Deleting={Deleting?._id===item._id}
+                 cancelDelete={cancelDelete}
+                 handleDelete={handleDelete}              />
             ))}
           </div>
         </div>
