@@ -201,8 +201,18 @@ export default function Orders() {
             orders.map((order) => (
               <div
                 key={order._id}
-                className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition"
+                className="bg-white rounded-2xl shadow-lg border-2 border-yellow-200 overflow-hidden"
               >
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <Bell className="w-6 h-6" />
+                  Incoming Orders
+                  <span className="ml-auto bg-white text-yellow-700 rounded-full px-3 py-1 text-sm font-bold">
+                    {orders.length}
+                  </span>
+                </h2>
+                <div>
+
+               
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <p className="text-sm text-gray-600">
@@ -259,7 +269,7 @@ export default function Orders() {
                     Mark as {getNextStatus(order.orderStatus).replace("_", " ")}
                   </button>
                 )}
-
+ 
                 {order.orderStatus === "ready" && (
                   <p className="text-center text-sm text-gray-600 mt-2">
                     Waiting for driver pickup...
@@ -267,8 +277,10 @@ export default function Orders() {
                 )}
               </div>
             ))
+            </div>
           )}
-        </div>
+      </div>
+       
       </div>
     </Sidebar>
   );
