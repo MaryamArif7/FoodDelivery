@@ -25,7 +25,7 @@ export const ResturantDetails = ({ resturant }) => {
    ).then((data) => {
      if (data?.payload?.success) {
        dispatch(fetchCartItems(user?.id));
-       toast.success("Menu Added to the cart");
+       toast.success("Menu item Added to the cart");
      }
      else {
        
