@@ -60,6 +60,8 @@ io.on("connection", (socket) => {
     } else if (userType === 'driver') {
       activeConnections.drivers.set(userId, socket.id);
       socket.join(`driver:${userId}`);
+      socket.join("available-drivers");
+    console.log(`Driver ${userId} automatically added to 'available-drivers' room`);
     }
    
      else if (userType === 'user') {
