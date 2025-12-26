@@ -6,28 +6,27 @@ import { useSearchParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { Nav } from '@/components/common/nav';
 import { Truck, Package, CheckCircle, Clock, MapPin } from 'lucide-react';
-import Map from '../../../components/user/MapView'
+import { Map } from '../../../components/user/MapView';
+
 export default function TrackOrderPage({ 
   params 
 }: { 
   params: { orderId: string } 
-})  {
+}) {
   const searchParams = useSearchParams();
   const { orderId } = params;
-    const { user } = useSelector((state) => state.auth);
-    const userId = user?.id;
+  const { user } = useSelector((state: any) => state.auth);
+  const userId = user?.id;
   const [status, setStatus] = useState("Loading...");
   const [socketConnected, setSocketConnected] = useState(false);
   const [order, setOrder] = useState<any>(null);
-  const [driverLocation, setDriverLocation] = useState<{latitude: number, longitude: number} | null>(null);
-   const [estimatedTime, setEstimatedTime] = useState<string | null>(null);
+  const [driverLocation, setDriverLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [customerLocation, setCustomerLocation] = useState<{lat: number, lng: number} | null>(null);
   const socketRef = useRef<any>(null);
-
 
   useEffect(() => {
     if (!orderId) return;
 
- 
     const fetchStatus = async () => {
       try {
         const res = await fetch(
@@ -35,6 +34,15 @@ export default function TrackOrderPage({
         );
         const data = await res.json();
         setStatus(data?.data?.orderStatus || "Pending");
+        setOrder(data?.data);
+        
+        // Set customer location from order data
+        if (data?.data?.deliveryAddress) {
+          setCustomerLocation({
+            lat: data.data.deliveryAddress.latitude,
+            lng: data.data.deliveryAddress.longitude
+          });
+        }
       } catch (err) {
         console.error("Error fetching order:", err);
         setStatus("Error loading order");
@@ -54,15 +62,17 @@ export default function TrackOrderPage({
       console.log("Connected to WebSocket server");
       setSocketConnected(true);
       
-
       socket.emit("identify", {
         userType: "user",
         userId: userId
       });
+      
+      // Join order-specific room
+      socket.emit("join-order-room", orderId);
     });
 
-  socket.on("order:created", (data) => {
-      console.log(" Order created:", data);
+    socket.on("order:created", (data) => {
+      console.log("Order created:", data);
       
       if (data.success && data.order && data.order.orderId === orderId) {
         setOrder(data.order);
@@ -71,7 +81,7 @@ export default function TrackOrderPage({
     });
 
     socket.on("order:status-updated", (data) => {
-      console.log(" Status updated:", data);
+      console.log("Status updated:", data);
       
       if (data.success && data.orderId === orderId) {
         setStatus(data.orderStatus);
@@ -82,7 +92,7 @@ export default function TrackOrderPage({
     });
 
     socket.on("order:driver-assigned", (data) => {
-      console.log(" Driver assigned:", data);
+      console.log("Driver assigned:", data);
       
       if (data.success && data.orderId === orderId) {
         setOrder(prev => ({ 
@@ -93,6 +103,7 @@ export default function TrackOrderPage({
         setStatus('picked_up');
       }
     });
+
     socket.on('driverLocationUpdate', (data) => {
       console.log('Driver location:', data);
       setDriverLocation({
@@ -102,17 +113,18 @@ export default function TrackOrderPage({
     });
 
     socket.on("disconnect", () => {
-      console.log(" Disconnected");
+      console.log("Disconnected");
       setSocketConnected(false);
     });
 
     socket.on("reconnect", () => {
-      console.log(" Reconnected");
+      console.log("Reconnected");
       setSocketConnected(true);
       socket.emit("identify", {
         userType: "user",
         userId: userId
       });
+      socket.emit("join-order-room", orderId);
     });
 
     return () => {
@@ -127,8 +139,9 @@ export default function TrackOrderPage({
         socketRef.current.disconnect();
       }
     };
-  }, [orderId]);
- const getStatusInfo = (currentStatus: string) => {
+  }, [orderId, userId]);
+
+  const getStatusInfo = (currentStatus: string) => {
     const statusMap: Record<string, {
       label: string;
       icon: any;
@@ -179,19 +192,18 @@ export default function TrackOrderPage({
   const statusInfo = getStatusInfo(status);
   const StatusIcon = statusInfo.icon;
 
-  
   const getProgressPercentage = (currentStatus: string) => {
     const statusOrder = ['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'delivered'];
     const currentIndex = statusOrder.indexOf(currentStatus);
     return ((currentIndex + 1) / statusOrder.length) * 100;
   };
+
   return (
     <div>
-
-   <Nav />
-     <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <Nav />
+      <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-3xl mx-auto">
-      
+          {/* Connection Status */}
           {!socketConnected && (
             <div className="mb-4 bg-orange-50 border border-orange-200 rounded-lg p-3 flex items-center gap-2">
               <div className="animate-pulse w-2 h-2 bg-orange-500 rounded-full"></div>
@@ -199,7 +211,7 @@ export default function TrackOrderPage({
             </div>
           )}
 
-      
+          {/* Header */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h1 className="text-2xl font-bold mb-2">Track Your Order</h1>
             <p className="text-gray-600">
@@ -207,7 +219,7 @@ export default function TrackOrderPage({
             </p>
           </div>
 
-       
+          {/* Status Card */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className={`flex items-center gap-4 p-4 rounded-lg ${statusInfo.color}`}>
               <StatusIcon className="w-12 h-12" />
@@ -217,7 +229,7 @@ export default function TrackOrderPage({
               </div>
             </div>
 
-         
+            {/* Progress Bar */}
             <div className="mt-6">
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div 
@@ -227,7 +239,7 @@ export default function TrackOrderPage({
               </div>
             </div>
 
-         
+            {/* Status Timeline */}
             <div className="mt-6 space-y-3">
               {['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'delivered'].map((s) => {
                 const info = getStatusInfo(s);
@@ -247,8 +259,21 @@ export default function TrackOrderPage({
             </div>
           </div>
 
-         
-    
+          {/* Live Map */}
+          {driverLocation && customerLocation && (
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <MapPin className="w-5 h-5" />
+                Live Tracking
+              </h3>
+              <Map 
+                driverLocation={driverLocation}
+                customerLocation={customerLocation}
+              />
+            </div>
+          )}
+
+          {/* Order Details */}
           {order && (
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-lg font-bold mb-4">Order Details</h3>
@@ -268,15 +293,6 @@ export default function TrackOrderPage({
           )}
         </div>
       </div>
-      <div>
-      <h1>Tracking Order #{orderId}</h1>
-      <p>Status: {order.orderStatus}</p>
-      {driverLocation && (
-        <p>Driver at: {driverLocation.lat}, {driverLocation.lng}</p>
-      )}
     </div>
-    <Map driverLocation={driverLocation}
-          customerLocation={order.customerLocation}/>
-     </div>
   );
 }

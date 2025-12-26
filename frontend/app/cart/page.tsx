@@ -119,6 +119,7 @@ export default function Cart() {
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
+      console.log(navigator.geolocation);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setCustomerLocation({

@@ -90,6 +90,8 @@ export default function Orders() {
   };
 
   const updateOrderStatus = async (orderId, newStatus) => {
+    console.log("from the updateorderstatus function ",orderId);
+      console.log("from the updateorderstatus function ",newStatus);
     try {
       const response = await fetch(
         `http://localhost:5000/api/orders/${orderId}/status`,
@@ -153,6 +155,7 @@ export default function Orders() {
     };
     return flow[currentStatus];
   };
+  console.log(orders);
   const incomingOrders = orders.filter((o) =>
     ["confirmed", "accepted", "preparing"].includes(o.orderStatus)
   );
