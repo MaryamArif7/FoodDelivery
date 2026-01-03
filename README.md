@@ -3,7 +3,7 @@
 ## Project Overview
 This is a full-stack food delivery application built with a Node.js/Express backend and a Next.js/React frontend. It supports user authentication, restaurant management, order placement, real-time tracking via WebSockets, and payment processing with Stripe. The app includes roles for users, restaurants, drivers, and admins.
 <img width="1259" height="676" alt="image" src="https://github.com/user-attachments/assets/b6f18ed3-a30f-49c2-980f-ef8ec5d132c2" />
-<img width="1272" height="608" alt="image" src="https://github.com/user-attachments/assets/fe3cb4f9-2eb8-488c-a7bd-8549f80291fa" />
+<img width="371" height="326" alt="image" src="https://github.com/user-attachments/assets/25184bfe-dd17-4036-a717-3db8ba06604a" />
 <img width="1272" height="608" alt="image" src="https://github.com/user-attachments/assets/ee97cfdc-1b6a-4a29-b4aa-bdfa30fe6258" />
 <img width="1186" height="633" alt="image" src="https://github.com/user-attachments/assets/75fdf01b-605d-4921-97d9-eb0b64b0427f" />
 <img width="1109" height="636" alt="image" src="https://github.com/user-attachments/assets/1aa03570-2991-46a5-a155-3178cfc13c64" />
