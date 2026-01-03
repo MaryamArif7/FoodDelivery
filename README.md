@@ -1,4 +1,4 @@
-# Food Delivery App
+# Food Rush
 
 ## Project Overview
 This is a full-stack food delivery application built with a Node.js/Express backend and a Next.js/React frontend. It supports user authentication, restaurant management, order placement, real-time tracking via WebSockets, and payment processing with Stripe. The app includes roles for users, restaurants, drivers, and admins.
