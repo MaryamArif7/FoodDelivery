@@ -17,7 +17,35 @@ This is a full-stack food delivery application built with a Node.js/Express back
 ## Admin Side
 
 <img width="1294" height="645" alt="image" src="https://github.com/user-attachments/assets/aeb3e61d-fc63-497b-94d3-4eaa5d72b2f3" />
-
+###  Order Status - From Cart to user
+```
+  Customer                  Restaurant                Driver                     Real-time Updates
+    |                          |                          |                              |
+    |--[Place Order]---------->|                          |                              |
+    |                          |                          |                    [WebSocket: order:new]
+    |                          |--[Accept Order]--------->|                              |
+    |                          |                          |                    [Status: Accepted]
+    |<------[Confirmation]-----|                          |                              |
+    |                          |                          |                              |
+    |                          |--[Preparing Food]------->|                              |
+    |                          |                          |                    [Status: Preparing]
+    |<------[Tracking Live]----|                          |                              |
+    |                          |                          |                              |
+    |                          |--[Food Ready]----------->|                              |
+    |                          |                          |<--[Notify Drivers]--[WebSocket Event]
+    |                          |                          |                              |
+    |                          |                          |--[Driver Accepts]----------->|
+    |<------[Driver Assigned]--|<------[Confirmation]-----|                              |
+    |                          |                          |                              |
+    |                          |                          |--[Picks Up Order]----------->|
+    |<------[Live Location]----|                          |                    [Status: On the way]
+    |         Updates          |                          |--[Updates Location]--------->|
+    |                          |                          |    (Every few seconds)       |
+    |                          |                          |                              |
+    |<------[Order Delivered]--|<------[Drops Order]------|                              |
+    |                          |                          |                    [Status: Delivered]
+                          |
+```
 ## Features
 - **User Management**: Sign up, sign in, profile management
 - **Restaurant Management**: Add menus, manage orders, upload images to Cloudinary
