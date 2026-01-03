@@ -1,7 +1,11 @@
-# Food Delivery App
+<img width="1162" height="635" alt="image" src="https://github.com/user-attachments/assets/828a23c2-425e-4f89-bf64-41549a5d473d" /># Food Delivery App
 
 ## Project Overview
 This is a full-stack food delivery application built with a Node.js/Express backend and a Next.js/React frontend. It supports user authentication, restaurant management, order placement, real-time tracking via WebSockets, and payment processing with Stripe. The app includes roles for users, restaurants, drivers, and admins.
+<img width="1259" height="676" alt="image" src="https://github.com/user-attachments/assets/b6f18ed3-a30f-49c2-980f-ef8ec5d132c2" />
+<img width="1272" height="608" alt="image" src="https://github.com/user-attachments/assets/fe3cb4f9-2eb8-488c-a7bd-8549f80291fa" />
+
+
 
 ## Features
 - **User Management**: Sign up, sign in, profile management
@@ -213,14 +217,7 @@ food-delivery-app/
 
 
 
-//{
-  name: 'maryamnewtest123',
-  email: 'www.maryamarif28@gmail.com',
-  password: 'maryam28',
-  phone: '0345678100',
-  address: 'pakistan',
-  role: 'user'
-}
+
 //resturant :
 parkjimin@gmail.com
 maryam1306
