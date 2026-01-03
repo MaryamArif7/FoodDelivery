@@ -359,9 +359,9 @@ export const driverAvailability=async(req,res)=>{
 }
 export const assignDriver = async (req, res) => {
   try {
-    const { order, orderId, driverId } = req.body;
-    const driver = await Driver.findById(driverId);
-    if (!driver) {
+    const {orderId, driverId } = req.body;
+    const order = await Order.findById(orderId);
+    if (!order) {
       return res.status(400).json({
         message: "Order not found",
         success: false,
