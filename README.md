@@ -35,6 +35,17 @@ This is a full-stack food delivery application built with a Node.js/Express back
 - **Frontend**: Next.js, React, Redux Toolkit, TypeScript, Tailwind CSS
 - **Payments**: Stripe API
 - **Authentication**: JWT
+## How It Works
+
+The app connects customers, restaurants, and drivers in real-time through WebSocket technology.
+
+### Order Flow
+
+A customer browses restaurants, adds items to their cart, and places an order with delivery details and payment through Stripe. The restaurant immediately receives a notification about the new order through WebSocket and can accept it to start preparing the food.
+
+Once the restaurant marks the order as ready for pickup, all available drivers in the system receive a notification. The first driver to accept gets assigned to the delivery. The driver then heads to the restaurant to pick up the order.
+
+While the driver is on the way to deliver the food, the customer can track their location in real-time on a map. The driver's position updates continuously through WebSocket connections, showing the customer exactly where their order is. When the driver arrives and completes the delivery, all parties receive confirmation and the order is marked as delivered.
 
 
 ## Installation and Setup
