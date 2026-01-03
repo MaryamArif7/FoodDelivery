@@ -17,35 +17,9 @@ This is a full-stack food delivery application built with a Node.js/Express back
 ## Admin Side
 
 <img width="1294" height="645" alt="image" src="https://github.com/user-attachments/assets/aeb3e61d-fc63-497b-94d3-4eaa5d72b2f3" />
-###  Order Status - From Cart to user
-```
-  Customer                  Restaurant                Driver                     Real-time Updates
-    |                          |                          |                              |
-    |--[Place Order]---------->|                          |                              |
-    |                          |                          |                    [WebSocket: order:new]
-    |                          |--[Accept Order]--------->|                              |
-    |                          |                          |                    [Status: Accepted]
-    |<------[Confirmation]-----|                          |                              |
-    |                          |                          |                              |
-    |                          |--[Preparing Food]------->|                              |
-    |                          |                          |                    [Status: Preparing]
-    |<------[Tracking Live]----|                          |                              |
-    |                          |                          |                              |
-    |                          |--[Food Ready]----------->|                              |
-    |                          |                          |<--[Notify Drivers]--[WebSocket Event]
-    |                          |                          |                              |
-    |                          |                          |--[Driver Accepts]----------->|
-    |<------[Driver Assigned]--|<------[Confirmation]-----|                              |
-    |                          |                          |                              |
-    |                          |                          |--[Picks Up Order]----------->|
-    |<------[Live Location]----|                          |                    [Status: On the way]
-    |         Updates          |                          |--[Updates Location]--------->|
-    |                          |                          |    (Every few seconds)       |
-    |                          |                          |                              |
-    |<------[Order Delivered]--|<------[Drops Order]------|                              |
-    |                          |                          |                    [Status: Delivered]
+
                           |
-```
+
 ## Features
 - **User Management**: Sign up, sign in, profile management
 - **Restaurant Management**: Add menus, manage orders, upload images to Cloudinary
@@ -199,9 +173,9 @@ The frontend runs on `http://localhost:3000`.
 - `/checkout` (page.tsx) - Enter delivery address, review order, initiate payment
 - `/confirmation` (page.tsx) - Confirmation page after successful payment
 - `/track-order` (page.tsx) - Track order status in real-time
-- `/restaurant-dashboard` (page.tsx) - Restaurant dashboard to manage menu and view orders
-- `/driver-dashboard` (page.tsx) - Driver dashboard to view and accept orders
-- `/admin` (page.tsx) - Admin panel to manage users, restaurants, and drivers
+- `/restaurant/` (page.tsx) - Restaurant dashboard to manage menu and view orders
+- `/driver/` (page.tsx) - Driver dashboard to view and accept orders
+- `/admin/` (page.tsx) - Admin panel to manage users, restaurants, and drivers
 
 ### User Flow
 1. **Browse** → User views available restaurants and menus
