@@ -1,11 +1,20 @@
-<img width="1162" height="635" alt="image" src="https://github.com/user-attachments/assets/828a23c2-425e-4f89-bf64-41549a5d473d" /># Food Delivery App
+# Food Delivery App
 
 ## Project Overview
 This is a full-stack food delivery application built with a Node.js/Express backend and a Next.js/React frontend. It supports user authentication, restaurant management, order placement, real-time tracking via WebSockets, and payment processing with Stripe. The app includes roles for users, restaurants, drivers, and admins.
 <img width="1259" height="676" alt="image" src="https://github.com/user-attachments/assets/b6f18ed3-a30f-49c2-980f-ef8ec5d132c2" />
 <img width="1272" height="608" alt="image" src="https://github.com/user-attachments/assets/fe3cb4f9-2eb8-488c-a7bd-8549f80291fa" />
+<img width="1272" height="608" alt="image" src="https://github.com/user-attachments/assets/ee97cfdc-1b6a-4a29-b4aa-bdfa30fe6258" />
+<img width="1186" height="633" alt="image" src="https://github.com/user-attachments/assets/75fdf01b-605d-4921-97d9-eb0b64b0427f" />
+<img width="1109" height="636" alt="image" src="https://github.com/user-attachments/assets/1aa03570-2991-46a5-a155-3178cfc13c64" />
+<img width="1155" height="553" alt="image" src="https://github.com/user-attachments/assets/0b6aba26-15ca-403a-b7c1-946de511b393" />
+<img width="1163" height="637" alt="image" src="https://github.com/user-attachments/assets/f942c54f-70d6-4705-a945-f2d5f5b04ae2" />
 
+## Resturant Side
 
+<img width="1300" height="624" alt="image" src="https://github.com/user-attachments/assets/1508879e-be60-4d95-8f4f-9254d5e347aa" />
+## Admin Side
+<img width="1294" height="645" alt="image" src="https://github.com/user-attachments/assets/aeb3e61d-fc63-497b-94d3-4eaa5d72b2f3" />
 
 ## Features
 - **User Management**: Sign up, sign in, profile management
