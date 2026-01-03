@@ -33,7 +33,7 @@ This is a full-stack food delivery application built with a Node.js/Express back
 - **Frontend**: Next.js, React, Redux Toolkit, TypeScript, Tailwind CSS
 - **Payments**: Stripe API
 - **Authentication**: JWT
-- **Deployment**: Not specified, but includes environment configs
+
 
 ## Installation and Setup
 
