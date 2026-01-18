@@ -75,19 +75,41 @@ io.on("connection", (socket) => {
    socket.on("leave-available-drivers",()=>{
    socket.leave('available-drivers');
    });
-
-
-    socket.on('updateDriverLocation', (data) => {
-    const { orderId, lat, lng, driverId } = data;
-    io.to(`order-${orderId}`).emit('driverLocationUpdate', {
-      lat,
-      lng,
-      driverId,
-      timestamp: Date.now()
-    });
-
+ socket.on('join-order-room', (orderId) => {
+    const roomName = `order-${orderId}`;
+    socket.join(roomName);
+    console.log(`✅ ${socket.id} joined room: ${roomName}`);
+    console.log(`👥 Room size:`, io.sockets.adapter.rooms.get(roomName)?.size || 0);
   });
 
+  //   socket.on('updateDriverLocation', (data) => {
+  //   const { orderId, lat, lng, driverId } = data;
+  //   io.to(`order-${orderId}`).emit('driverLocationUpdate', {
+  //     lat,
+  //     lng,
+  //     driverId,
+  //     timestamp: Date.now()
+  //   });
+
+  // });
+
+  socket.on('updateDriverLocation', (data) => {
+  const { orderId, lat, lng, driverId } = data;
+  
+  console.log(`📍 Received location update for order ${orderId}:`, { lat, lng, driverId });
+  console.log(`📤 Broadcasting to room: order-${orderId}`);
+  
+  const roomClients = io.sockets.adapter.rooms.get(`order-${orderId}`);
+  console.log(`👥 Clients in room:`, roomClients ? roomClients.size : 0);
+  
+  io.to(`order-${orderId}`).emit('driverLocationUpdate', {
+    orderId, // ⚠️ ADD THIS - You forgot it in your backend code!
+    lat,
+    lng,
+    driverId,
+    timestamp: Date.now()
+  });
+});
   socket.on('disconnect', () => {
    
     activeConnections.restaurants.forEach((socketId, restaurantId) => {

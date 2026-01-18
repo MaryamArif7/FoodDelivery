@@ -32,7 +32,9 @@ export default function Driver() {
         userId: driverId
       });
     });
-
+        socket.on('available-drivers',()=>{
+          console.log("emitting to be added in available drivers");
+        })
     // Fixed: Match the actual data structure from backend
     socket.on("new order for pick-up", (data) => {
       console.log("📬 New order received:", data);

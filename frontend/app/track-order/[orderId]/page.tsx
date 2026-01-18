@@ -21,7 +21,10 @@ export default function TrackOrderPage({
   const [socketConnected, setSocketConnected] = useState(false);
   const [order, setOrder] = useState<any>(null);
   const [driverLocation, setDriverLocation] = useState<{lat: number, lng: number} | null>(null);
-  const [customerLocation, setCustomerLocation] = useState<{lat: number, lng: number} | null>(null);
+ const [customerLocation, setCustomerLocation] = useState<{lat: number, lng: number} | null>({
+  lat: 32.3470222,
+  lng: 74.7049598
+});
   const socketRef = useRef<any>(null);
 
   useEffect(() => {
@@ -37,12 +40,12 @@ export default function TrackOrderPage({
         setOrder(data?.data);
         
         // Set customer location from order data
-        if (data?.data?.deliveryAddress) {
-          setCustomerLocation({
-            lat: data.data.deliveryAddress.latitude,
-            lng: data.data.deliveryAddress.longitude
-          });
-        }
+        // if (data?.data?.deliveryAddress) {
+        //   setCustomerLocation({
+        //     lat: data.data.deliveryAddress.latitude,
+        //     lng: data.data.deliveryAddress.longitude
+        //   });
+        // }
       } catch (err) {
         console.error("Error fetching order:", err);
         setStatus("Error loading order");
@@ -172,7 +175,7 @@ export default function TrackOrderPage({
         color: "text-green-600 bg-green-50",
         description: "Waiting for driver to pick up"
       },
-      picked_up: {
+     on_the_way: {
         label: "Out for Delivery",
         icon: Truck,
         color: "text-orange-600 bg-orange-50",
@@ -193,11 +196,12 @@ export default function TrackOrderPage({
   const StatusIcon = statusInfo.icon;
 
   const getProgressPercentage = (currentStatus: string) => {
-    const statusOrder = ['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'delivered'];
+    const statusOrder = ['pending', 'accepted', 'preparing', 'ready', 'on_the_way', 'delivered'];
     const currentIndex = statusOrder.indexOf(currentStatus);
     return ((currentIndex + 1) / statusOrder.length) * 100;
   };
-
+console.log("driver",driverLocation);
+console.log("user",customerLocation);
   return (
     <div>
       <Nav />
@@ -211,13 +215,7 @@ export default function TrackOrderPage({
             </div>
           )}
 
-          {/* Header */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h1 className="text-2xl font-bold mb-2">Track Your Order</h1>
-            <p className="text-gray-600">
-              Order ID: <span className="font-mono text-blue-600">#{orderId.slice(-8).toUpperCase()}</span>
-            </p>
-          </div>
+    
 
           {/* Status Card */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -241,10 +239,10 @@ export default function TrackOrderPage({
 
             {/* Status Timeline */}
             <div className="mt-6 space-y-3">
-              {['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'delivered'].map((s) => {
+              {['pending', 'accepted', 'preparing', 'ready', 'on_the_way', 'delivered'].map((s) => {
                 const info = getStatusInfo(s);
                 const Icon = info.icon;
-                const statusOrder = ['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'delivered'];
+                const statusOrder = ['pending', 'accepted', 'preparing', 'ready', 'on_the_way', 'delivered'];
                 const isCompleted = statusOrder.indexOf(status) >= statusOrder.indexOf(s);
                 
                 return (
