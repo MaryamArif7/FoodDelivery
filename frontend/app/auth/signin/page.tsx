@@ -78,7 +78,7 @@ const dispatch = useDispatch();
                   </button>
 
                   <span className="text-center text-gray-600">
-                    Don't have an account?{" "}
+                    Dont have an account?{" "}
                     <Link
                       className="text-red-600 hover:underline cursor-pointer"
                       href="/auth/signup"

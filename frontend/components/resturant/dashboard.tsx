@@ -1,5 +1,4 @@
 "use client";
-
 import { Sidebar } from "../resturant/Sidebar";
 import { useState, useEffect } from "react";
 import { DashboardCard } from "./DashboardCard";

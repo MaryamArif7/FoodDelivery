@@ -1,6 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-// Create Payment Intent
+
 export async function createPaymentIntent(paymentData) {
   try {
     const response = await fetch(`${API_URL}/api/payment/create-payment-intent`, {
@@ -24,7 +24,6 @@ export async function createPaymentIntent(paymentData) {
   }
 }
 
-// Get Payment Status
 export async function getPaymentStatus(paymentId) {
   try {
     const response = await fetch(`${API_URL}/api/payment/status/${paymentId}`);
@@ -40,7 +39,7 @@ export async function getPaymentStatus(paymentId) {
   }
 }
 
-// Get User Payment History
+
 export async function getUserPayments(userId, page = 1, limit = 10) {
   try {
     const response = await fetch(

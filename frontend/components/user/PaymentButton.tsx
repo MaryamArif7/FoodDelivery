@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createPaymentIntent } from '@/utils/api';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createPaymentIntent } from "@/utils/api";
 
 export default function PaymentButton({ product, userId }) {
   const [loading, setLoading] = useState(false);
@@ -16,9 +16,9 @@ export default function PaymentButton({ product, userId }) {
     try {
       const paymentData = {
         amount: product.price,
-        currency: 'usd',
-        userId: userId || 'guest-user-id', // Replace with actual user ID
-        customerEmail: 'customer@example.com', // Replace with actual email
+        currency: "usd",
+        userId: userId || "guest-user-id",
+        customerEmail: "customer@example.com",
         productDetails: {
           name: product.name,
           description: product.description,
@@ -29,16 +29,18 @@ export default function PaymentButton({ product, userId }) {
       const response = await createPaymentIntent(paymentData);
 
       if (response.success) {
-        // Store client secret and redirect to checkout
-        localStorage.setItem('payment_client_secret', response.data.clientSecret);
-        localStorage.setItem('payment_id', response.data.paymentId);
-        router.push('/checkout');
+        localStorage.setItem(
+          "payment_client_secret",
+          response.data.clientSecret,
+        );
+        localStorage.setItem("payment_id", response.data.paymentId);
+        router.push("/checkout");
       } else {
-        setError('Failed to initialize payment');
+        setError("Failed to initialize payment");
       }
     } catch (err) {
-      setError(err.message || 'An error occurred');
-      console.error('Checkout error:', err);
+      setError(err.message || "An error occurred");
+      console.error("Checkout error:", err);
     } finally {
       setLoading(false);
     }
@@ -53,12 +55,10 @@ export default function PaymentButton({ product, userId }) {
                    hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed
                    transition-colors duration-200"
       >
-        {loading ? 'Loading...' : `Buy Now - $${product.price}`}
+        {loading ? "Loading..." : `Buy Now - $${product.price}`}
       </button>
 
-      {error && (
-        <p className="mt-2 text-red-600 text-sm">{error}</p>
-      )}
+      {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}
     </div>
   );
 }

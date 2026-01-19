@@ -1,6 +1,6 @@
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Earth's radius in km
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   
@@ -10,13 +10,13 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     Math.sin(dLon/2) * Math.sin(dLon/2);
   
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  const distance = R * c; // Distance in km
+  const distance = R * c;
   
   return distance;
 }
 
 function calculateETA(distance) {
-  const avgSpeed = 30; // km/h average speed
+  const avgSpeed = 30; 
   const timeInHours = distance / avgSpeed;
   const timeInMinutes = Math.round(timeInHours * 60);
   return timeInMinutes;

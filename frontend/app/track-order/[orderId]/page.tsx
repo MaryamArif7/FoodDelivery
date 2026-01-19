@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import { useSearchParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { Nav } from '@/components/common/nav';
-import { Truck, Package, CheckCircle, Clock, MapPin } from 'lucide-react';
-import { Map } from '../../../components/user/MapView';
+import { Nav } from "@/components/common/nav";
+import { Truck, Package, CheckCircle, Clock, MapPin } from "lucide-react";
+import { Map } from "../../../components/user/MapView";
 
-export default function TrackOrderPage({ 
-  params 
-}: { 
-  params: { orderId: string } 
+export default function TrackOrderPage({
+  params,
+}: {
+  params: { orderId: string };
 }) {
   const searchParams = useSearchParams();
   const { orderId } = params;
@@ -20,11 +20,17 @@ export default function TrackOrderPage({
   const [status, setStatus] = useState("Loading...");
   const [socketConnected, setSocketConnected] = useState(false);
   const [order, setOrder] = useState<any>(null);
-  const [driverLocation, setDriverLocation] = useState<{lat: number, lng: number} | null>(null);
- const [customerLocation, setCustomerLocation] = useState<{lat: number, lng: number} | null>({
-  lat: 32.3470222,
-  lng: 74.7049598
-});
+  const [driverLocation, setDriverLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [customerLocation, setCustomerLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>({
+    lat: 32.3470222,
+    lng: 74.7049598,
+  });
   const socketRef = useRef<any>(null);
 
   useEffect(() => {
@@ -32,13 +38,11 @@ export default function TrackOrderPage({
 
     const fetchStatus = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/orders/${orderId}`
-        );
+        const res = await fetch(`http://localhost:5000/api/orders/${orderId}`);
         const data = await res.json();
         setStatus(data?.data?.orderStatus || "Pending");
         setOrder(data?.data);
-        
+
         // Set customer location from order data
         // if (data?.data?.deliveryAddress) {
         //   setCustomerLocation({
@@ -56,7 +60,7 @@ export default function TrackOrderPage({
     socketRef.current = io("http://localhost:5000", {
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionAttempts: 5
+      reconnectionAttempts: 5,
     });
 
     const socket = socketRef.current;
@@ -64,19 +68,18 @@ export default function TrackOrderPage({
     socket.on("connect", () => {
       console.log("Connected to WebSocket server");
       setSocketConnected(true);
-      
+
       socket.emit("identify", {
         userType: "user",
-        userId: userId
+        userId: userId,
       });
-      
-      // Join order-specific room
+
       socket.emit("join-order-room", orderId);
     });
 
     socket.on("order:created", (data) => {
       console.log("Order created:", data);
-      
+
       if (data.success && data.order && data.order.orderId === orderId) {
         setOrder(data.order);
         setStatus(data.order.orderStatus);
@@ -85,33 +88,33 @@ export default function TrackOrderPage({
 
     socket.on("order:status-updated", (data) => {
       console.log("Status updated:", data);
-      
+
       if (data.success && data.orderId === orderId) {
         setStatus(data.orderStatus);
         if (data.order) {
-          setOrder(prev => ({ ...prev, ...data.order }));
+          setOrder((prev) => ({ ...prev, ...data.order }));
         }
-      } 
+      }
     });
 
     socket.on("order:driver-assigned", (data) => {
       console.log("Driver assigned:", data);
-      
+
       if (data.success && data.orderId === orderId) {
-        setOrder(prev => ({ 
-          ...prev, 
+        setOrder((prev) => ({
+          ...prev,
           driverId: data.driver,
-          orderStatus: 'picked_up'
+          orderStatus: "picked_up",
         }));
-        setStatus('picked_up');
+        setStatus("picked_up");
       }
     });
 
-    socket.on('driverLocationUpdate', (data) => {
-      console.log('Driver location:', data);
+    socket.on("driverLocationUpdate", (data) => {
+      console.log("Driver location:", data);
       setDriverLocation({
         lat: data.lat,
-        lng: data.lng
+        lng: data.lng,
       });
     });
 
@@ -125,7 +128,7 @@ export default function TrackOrderPage({
       setSocketConnected(true);
       socket.emit("identify", {
         userType: "user",
-        userId: userId
+        userId: userId,
       });
       socket.emit("join-order-room", orderId);
     });
@@ -136,7 +139,7 @@ export default function TrackOrderPage({
         socket.off("order:created");
         socket.off("order:status-updated");
         socket.off("order:driver-assigned");
-        socket.off('driverLocationUpdate');
+        socket.off("driverLocationUpdate");
         socket.off("disconnect");
         socket.off("reconnect");
         socketRef.current.disconnect();
@@ -145,48 +148,51 @@ export default function TrackOrderPage({
   }, [orderId, userId]);
 
   const getStatusInfo = (currentStatus: string) => {
-    const statusMap: Record<string, {
-      label: string;
-      icon: any;
-      color: string;
-      description: string;
-    }> = {
+    const statusMap: Record<
+      string,
+      {
+        label: string;
+        icon: any;
+        color: string;
+        description: string;
+      }
+    > = {
       pending: {
         label: "Order Placed",
         icon: Clock,
         color: "text-yellow-600 bg-yellow-50",
-        description: "Waiting for restaurant confirmation"
+        description: "Waiting for restaurant confirmation",
       },
       accepted: {
         label: "Order Accepted",
         icon: CheckCircle,
         color: "text-blue-600 bg-blue-50",
-        description: "Restaurant is preparing your order"
+        description: "Restaurant is preparing your order",
       },
       preparing: {
         label: "Being Prepared",
         icon: Package,
         color: "text-purple-600 bg-purple-50",
-        description: "Your food is being cooked"
+        description: "Your food is being cooked",
       },
       ready: {
         label: "Ready for Pickup",
         icon: Package,
         color: "text-green-600 bg-green-50",
-        description: "Waiting for driver to pick up"
+        description: "Waiting for driver to pick up",
       },
-     on_the_way: {
+      on_the_way: {
         label: "Out for Delivery",
         icon: Truck,
         color: "text-orange-600 bg-orange-50",
-        description: "Driver is on the way to you"
+        description: "Driver is on the way to you",
       },
       delivered: {
         label: "Delivered",
         icon: CheckCircle,
         color: "text-green-600 bg-green-50",
-        description: "Order delivered successfully!"
-      }
+        description: "Order delivered successfully!",
+      },
     };
 
     return statusMap[currentStatus] || statusMap.pending;
@@ -196,30 +202,37 @@ export default function TrackOrderPage({
   const StatusIcon = statusInfo.icon;
 
   const getProgressPercentage = (currentStatus: string) => {
-    const statusOrder = ['pending', 'accepted', 'preparing', 'ready', 'on_the_way', 'delivered'];
+    const statusOrder = [
+      "pending",
+      "accepted",
+      "preparing",
+      "ready",
+      "on_the_way",
+      "delivered",
+    ];
     const currentIndex = statusOrder.indexOf(currentStatus);
     return ((currentIndex + 1) / statusOrder.length) * 100;
   };
-console.log("driver",driverLocation);
-console.log("user",customerLocation);
+  console.log("driver", driverLocation);
+  console.log("user", customerLocation);
   return (
     <div>
       <Nav />
       <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-3xl mx-auto">
-          {/* Connection Status */}
           {!socketConnected && (
             <div className="mb-4 bg-orange-50 border border-orange-200 rounded-lg p-3 flex items-center gap-2">
               <div className="animate-pulse w-2 h-2 bg-orange-500 rounded-full"></div>
-              <p className="text-sm text-orange-700">Connecting to live updates...</p>
+              <p className="text-sm text-orange-700">
+                Connecting to live updates...
+              </p>
             </div>
           )}
 
-    
-
-          {/* Status Card */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <div className={`flex items-center gap-4 p-4 rounded-lg ${statusInfo.color}`}>
+            <div
+              className={`flex items-center gap-4 p-4 rounded-lg ${statusInfo.color}`}
+            >
               <StatusIcon className="w-12 h-12" />
               <div>
                 <h2 className="text-xl font-bold">{statusInfo.label}</h2>
@@ -227,27 +240,45 @@ console.log("user",customerLocation);
               </div>
             </div>
 
-            {/* Progress Bar */}
             <div className="mt-6">
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   className="bg-blue-600 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${getProgressPercentage(status)}%` }}
                 ></div>
               </div>
             </div>
 
-            {/* Status Timeline */}
             <div className="mt-6 space-y-3">
-              {['pending', 'accepted', 'preparing', 'ready', 'on_the_way', 'delivered'].map((s) => {
+              {[
+                "pending",
+                "accepted",
+                "preparing",
+                "ready",
+                "on_the_way",
+                "delivered",
+              ].map((s) => {
                 const info = getStatusInfo(s);
                 const Icon = info.icon;
-                const statusOrder = ['pending', 'accepted', 'preparing', 'ready', 'on_the_way', 'delivered'];
-                const isCompleted = statusOrder.indexOf(status) >= statusOrder.indexOf(s);
-                
+                const statusOrder = [
+                  "pending",
+                  "accepted",
+                  "preparing",
+                  "ready",
+                  "on_the_way",
+                  "delivered",
+                ];
+                const isCompleted =
+                  statusOrder.indexOf(status) >= statusOrder.indexOf(s);
+
                 return (
-                  <div key={s} className={`flex items-center gap-3 ${isCompleted ? 'opacity-100' : 'opacity-40'}`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isCompleted ? 'bg-green-500 text-white' : 'bg-gray-300'}`}>
+                  <div
+                    key={s}
+                    className={`flex items-center gap-3 ${isCompleted ? "opacity-100" : "opacity-40"}`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${isCompleted ? "bg-green-500 text-white" : "bg-gray-300"}`}
+                    >
                       <Icon className="w-4 h-4" />
                     </div>
                     <span className="text-sm font-medium">{info.label}</span>
@@ -257,29 +288,31 @@ console.log("user",customerLocation);
             </div>
           </div>
 
-          {/* Live Map */}
           {driverLocation && customerLocation && (
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <MapPin className="w-5 h-5" />
                 Live Tracking
               </h3>
-              <Map 
+              <Map
                 driverLocation={driverLocation}
                 customerLocation={customerLocation}
               />
             </div>
           )}
 
-          {/* Order Details */}
           {order && (
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-lg font-bold mb-4">Order Details</h3>
               <div className="space-y-3">
                 {order.items?.map((item: any, idx: number) => (
                   <div key={idx} className="flex justify-between">
-                    <span>{item.quantity}x {item.name}</span>
-                    <span className="font-semibold">${item.price * item.quantity}</span>
+                    <span>
+                      {item.quantity}x {item.name}
+                    </span>
+                    <span className="font-semibold">
+                      ${item.price * item.quantity}
+                    </span>
                   </div>
                 ))}
                 <div className="border-t pt-3 flex justify-between text-lg font-bold">

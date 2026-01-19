@@ -7,14 +7,13 @@ export const useSocket = (onEvent?: (event: string, data: any) => void) => {
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    // connect to your backend socket server
     const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000");
 
     socket.on("connect", () => {
-      console.log("✅ Connected to WebSocket Server");
+      console.log("Connected to WebSocket Server");
     });
 
-    // Listen to all incoming events
+
     if (onEvent) {
       socket.onAny((event, data) => onEvent(event, data));
     }
