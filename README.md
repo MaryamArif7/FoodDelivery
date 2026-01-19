@@ -9,6 +9,7 @@ This is a full-stack food delivery application built with a Node.js/Express back
 <img width="1109" height="636" alt="image" src="https://github.com/user-attachments/assets/1aa03570-2991-46a5-a155-3178cfc13c64" />
 <img width="1155" height="553" alt="image" src="https://github.com/user-attachments/assets/0b6aba26-15ca-403a-b7c1-946de511b393" />
 <img width="1163" height="637" alt="image" src="https://github.com/user-attachments/assets/f942c54f-70d6-4705-a945-f2d5f5b04ae2" />
+<img width="1129" height="632" alt="image" src="https://github.com/user-attachments/assets/dfeddc52-499b-4384-bec7-0f89dd148dca" />
 
 ## Resturant Side
 
