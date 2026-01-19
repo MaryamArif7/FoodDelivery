@@ -150,14 +150,10 @@ export const SignUpResturant = async (req, res) => {
   }
 };
 export const SignUpDriver = async (req, res) => {
-  console.log('📦 Request body:', req.body);
-  console.log('🔍 Role value:', req.body.role);
-  console.log('🔍 Role type:', typeof req.body.role);
-  
+
   try {
     const { name, email, phone, password, role } = req.body;
 
-    // Validation
     if (!name) {
       return res.status(400).json({ success: false, message: "Please provide name" });
     }
@@ -173,17 +169,15 @@ export const SignUpDriver = async (req, res) => {
     if (role !== "driver") {
       return res.status(400).json({ success: false, message: "Invalid role. Must be 'driver'" });
     }
-
-    // Check if driver already exists
     const existingDriver = await Driver.findOne({ email });
     if (existingDriver) {
       return res.status(409).json({ success: false, message: "Driver with this email already exists" });
     }
 
-    // Hash password
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new driver
+
     const newDriver = new Driver({
       name,
       email,
@@ -206,9 +200,9 @@ export const SignUpDriver = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error in SignUpDriver:', error);
+    console.error(' Error in SignUpDriver:', error);
     
-    // Handle specific MongoDB errors
+   
     if (error.code === 11000) {
       return res.status(409).json({ 
         success: false, 
@@ -216,7 +210,7 @@ export const SignUpDriver = async (req, res) => {
       });
     }
     
-    // Handle validation errors
+  
     if (error.name === 'ValidationError') {
       return res.status(400).json({ 
         success: false, 

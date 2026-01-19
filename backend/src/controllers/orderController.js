@@ -122,8 +122,7 @@ export const updatePaymentStatus = async (req, res) => {
         { $set: { items: [] } }
       );
     }
-  //  console.log(order);
-   // console.log(order.items.restaurantId._id.toString())
+  
     const io = req.app.get("io");
     io.to(`restaurant:${order.items[0].restaurantId.toString()}`).emit("order:new", {
       success: true,
@@ -197,16 +196,10 @@ export const status = async (req, res) => {
     };
     const userId = order.userId._id.toString();
     const roomName = `user:${userId}`;
-
-    console.log(" EMITTING EVENT: order:status-updated");
-    console.log(" TO ROOM:", roomName);
-    console.log("DATA:", JSON.stringify(emitData, null, 2));
     io.to(roomName).emit("order:status-updated", emitData);
 
     const io_instance = req.app.get("io");
     const roomSockets = io_instance.sockets.adapter.rooms.get(roomName);
-    console.log(" Event emitted to room:", roomName);
-    console.log(" Clients in room:", roomSockets ? roomSockets.size : 0);
     if (roomSockets) {
       console.log(" Socket IDs:", Array.from(roomSockets));
     }
@@ -221,43 +214,29 @@ export const status = async (req, res) => {
     // }
     if (orderStatus === "ready") {
   try {
-    console.log("\n=== 🚀 ORDER READY EVENT ===");
-    console.log("Timestamp:", new Date().toISOString());
-    console.log("Order ID:", order._id);
-    console.log("Order Status:", orderStatus);
-    console.log("Restaurant:", order.restaurantId?.name || "Unknown");
-    
-    // Check room status
+
     const driversRoom = io.sockets.adapter.rooms.get("available-drivers");
     const driverCount = driversRoom ? driversRoom.size : 0;
     const driverSockets = driversRoom ? Array.from(driversRoom) : [];
-    
-    console.log(`📍 Drivers in room: ${driverCount}`);
     if (driverCount > 0) {
       console.log("Driver Socket IDs:", driverSockets);
     } else {
-      console.warn("⚠️  WARNING: No drivers available!");
+      console.warn("WARNING: No drivers available!");
     }
-    
-    // Prepare payload
     const payload = {
       orderId: order._id,
       restaurantName: order.restaurantId?.name,
       deliveryAddress: order.deliveryAddress,
     };
     
-    console.log("📦 Payload:", JSON.stringify(payload, null, 2));
-    
-    // Emit event
+   
+
     const emitResult = io.to("available-drivers").emit("new order for pick-up", payload);
     
-    console.log("✅ Event emitted successfully");
-    console.log("Event name: 'new order for pick-up'");
-    console.log("Target room: 'available-drivers'");
-    console.log("===========================\n");
+    
     
   } catch (error) {
-    console.error("❌ ERROR emitting order event:", error);
+    console.error(" ERROR emitting order event:", error);
     console.error("Error stack:", error.stack);
   }
 }
@@ -426,7 +405,7 @@ export const driverStatus = async (req, res) => {
     const userId = order.userId._id.toString();
     const roomName = `user:${userId}`;
 
-    console.log(" EMITTING EVENT: order:status-updated");
+    console.log(" EMITTING  order:status-updated");
     console.log(" TO ROOM:", roomName);
     console.log("DATA:", JSON.stringify(emitData, null, 2));
     io.to(roomName).emit("order:status-updated", emitData);
